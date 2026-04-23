@@ -370,3 +370,90 @@ INSERT INTO TRANSFER (email_member_1, email_member_2, timestamp, jumlah, catatan
 ('marco.oliveira@email.com', 'nina.santos@email.com', '2024-07-08 11:15:00', 2500, NULL),
 ('tina.wu@email.com', 'samuel.torres@email.com', '2024-07-22 16:00:00', 1800, 'Miles bonus'),
 ('kevin.silva@email.com', 'laura.costa@email.com', '2024-08-05 10:30:00', 2200, 'Transfer akhir program');
+
+-- =====================
+-- PENYEDIA (8 rows)
+-- =====================
+INSERT INTO PENYEDIA DEFAULT VALUES; -- id = 1 (Garuda Indonesia)
+INSERT INTO PENYEDIA DEFAULT VALUES; -- id = 2 (Singapore Airlines)
+INSERT INTO PENYEDIA DEFAULT VALUES; -- id = 3 (Malaysia Airlines)
+INSERT INTO PENYEDIA DEFAULT VALUES; -- id = 4 (Thai Airways)
+INSERT INTO PENYEDIA DEFAULT VALUES; -- id = 5 (Philippines Airlines)
+INSERT INTO PENYEDIA DEFAULT VALUES; -- id = 6 (Mitra: TravelokaPartner)
+INSERT INTO PENYEDIA DEFAULT VALUES; -- id = 7 (Mitra: HotelIndonesia)
+INSERT INTO PENYEDIA DEFAULT VALUES; -- id = 8 (Mitra: ShopeeTravel)
+
+-- =====================
+-- BANDARA (15 rows)
+-- =====================
+INSERT INTO BANDARA (iata_code, nama, kota, negara) VALUES
+('CGK', 'Soekarno-Hatta International Airport', 'Tangerang', 'Indonesia'),
+('DPS', 'Ngurah Rai International Airport', 'Denpasar', 'Indonesia'),
+('SUB', 'Juanda International Airport', 'Surabaya', 'Indonesia'),
+('SIN', 'Singapore Changi Airport', 'Singapore', 'Singapore'),
+('KUL', 'Kuala Lumpur International Airport', 'Kuala Lumpur', 'Malaysia'),
+('BKK', 'Suvarnabhumi Airport', 'Bangkok', 'Thailand'),
+('MNL', 'Ninoy Aquino International Airport', 'Manila', 'Philippines'),
+('NRT', 'Narita International Airport', 'Tokyo', 'Japan'),
+('ICN', 'Incheon International Airport', 'Seoul', 'South Korea'),
+('HKG', 'Hong Kong International Airport', 'Hong Kong', 'China'),
+('SYD', 'Sydney Kingsford Smith Airport', 'Sydney', 'Australia'),
+('DXB', 'Dubai International Airport', 'Dubai', 'United Arab Emirates'),
+('LHR', 'Heathrow Airport', 'London', 'United Kingdom'),
+('AMS', 'Amsterdam Airport Schiphol', 'Amsterdam', 'Netherlands'),
+('DOH', 'Hamad International Airport', 'Doha', 'Qatar');
+
+-- =====================
+-- MASKAPAI (5 rows)
+-- =====================
+INSERT INTO MASKAPAI (kode_maskapai, nama_maskapai, id_penyedia) VALUES
+('GA',  'Garuda Indonesia',      1),
+('SQ',  'Singapore Airlines',    2),
+('MH',  'Malaysia Airlines',     3),
+('TG',  'Thai Airways',          4),
+('PR',  'Philippine Airlines',   5);
+
+-- =====================
+-- MITRA (5 rows)
+-- =====================
+INSERT INTO MITRA (email_mitra, id_penyedia, nama_mitra, tanggal_kerja_sama) VALUES
+('partner@traveloka.com',       6, 'TravelokaPartner',       '2022-01-15'),
+('partner@hotelindonesia.com',  7, 'Hotel Indonesia Kempinski','2021-06-01'),
+('partner@shopeetravel.com',    8, 'ShopeeTravel',           '2023-03-10');
+
+INSERT INTO PENYEDIA DEFAULT VALUES; -- id = 9 (Mitra: AgodaPartner)
+INSERT INTO PENYEDIA DEFAULT VALUES; -- id = 10 (Mitra: TiketPartner)
+
+INSERT INTO MITRA (email_mitra, id_penyedia, nama_mitra, tanggal_kerja_sama) VALUES
+('partner@agoda.com',     9,  'AgodaPartner',  '2022-09-20'),
+('partner@tiket.com',     10, 'TiketPartner',  '2023-07-05');
+
+-- =====================
+-- HADIAH (10 rows)
+-- =====================
+INSERT INTO HADIAH (nama, miles, deskripsi, valid_start_date, program_end, id_penyedia) VALUES
+('Tiket Domestik PP',           15000, 'Tiket pulang-pergi rute domestik Indonesia via Garuda Indonesia',    '2024-01-01', '2025-12-31', 1),
+('Upgrade ke Business Class',   25000, 'Upgrade dari economy class ke business class via Garuda Indonesia',   '2024-01-01', '2025-12-31', 1),
+('Voucher Hotel Rp 500.000',     8000, 'Voucher menginap 1 malam di Hotel Indonesia Kempinski Jakarta',       '2024-06-01', '2025-06-30', 7),
+('Akses Lounge 1x',              3000, 'Akses lounge seluruh bandara partner ShopeeTravel 1 kali masuk',      '2024-01-01', '2025-12-31', 8),
+('Diskon Hotel 30%',             5000, 'Diskon 30% pemesanan hotel melalui Traveloka partner program',         '2024-03-01', '2025-12-31', 6),
+('Tiket Singapore Airlines',    20000, 'Tiket penerbangan Singapore Airlines rute Asia tenggara',              '2024-01-01', '2026-01-31', 2),
+('Free Bagasi 10kg SQ',          6000, 'Extra bagasi 10kg untuk penerbangan Singapore Airlines',              '2024-04-01', '2025-09-30', 2),
+('Voucher Agoda Rp 300.000',     4000, 'Voucher pemesanan hotel melalui Agoda senilai Rp 300.000',            '2024-07-01', '2025-07-31', 9),
+('Tiket Pesawat TiketPartner',  12000, 'Tiket pesawat domestik maupun internasional via Tiket.com',           '2024-01-01', '2025-12-31', 10),
+('Akses Lounge Premium MH',      7000, 'Akses Malaysia Airlines Golden Lounge di Kuala Lumpur',               '2024-02-01', '2025-12-31', 3);
+
+-- =====================
+-- STAF (10 rows)
+-- =====================
+INSERT INTO STAF (email, kode_maskapai) VALUES
+('yasmin.omar@email.com',       'GA'),
+('zaki.rahman@email.com',       'GA'),
+('aisha.malik@email.com',       'SQ'),
+('bilal.khan@email.com',        'SQ'),
+('clara.johansson@email.com',   'MH'),
+('david.lindqvist@email.com',   'MH'),
+('elena.popescu@email.com',     'TG'),
+('felix.ionescu@email.com',     'TG'),
+('gina.thomas@email.com',       'PR'),
+('harry.nguyen@email.com',      'PR');
