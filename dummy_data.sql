@@ -457,3 +457,92 @@ INSERT INTO STAF (email, kode_maskapai) VALUES
 ('felix.ionescu@email.com',     'TG'),
 ('gina.thomas@email.com',       'PR'),
 ('harry.nguyen@email.com',      'PR');
+
+-- =====================
+-- AWARD_MILES_PACKAGE (5 rows)
+-- =====================
+INSERT INTO AWARD_MILES_PACKAGE (harga_paket, jumlah_award_miles) VALUES
+(150000.00,   5000),
+(280000.00,  10000),
+(500000.00,  20000),
+(900000.00,  40000),
+(1500000.00, 75000);
+ 
+-- =====================
+-- MEMBER_AWARD_MILES_PACKAGE (20 rows)
+-- =====================
+INSERT INTO MEMBER_AWARD_MILES_PACKAGE (id_award_miles_package, email_member, timestamp) VALUES
+('AMP-001', 'alice.smith@email.com',    '2024-01-05 09:00:00'),
+('AMP-002', 'bob.jones@email.com',      '2024-01-12 14:30:00'),
+('AMP-003', 'citra.dewi@email.com',     '2024-02-01 10:15:00'),
+('AMP-001', 'dian.pratama@email.com',   '2024-02-14 11:00:00'),
+('AMP-004', 'frank.ocean@email.com',    '2024-02-20 16:00:00'),
+('AMP-002', 'henry.lim@email.com',      '2024-03-03 08:45:00'),
+('AMP-003', 'ivan.petrov@email.com',    '2024-03-10 13:20:00'),
+('AMP-005', 'jose.garcia@email.com',    '2024-03-18 15:30:00'),
+('AMP-001', 'karen.nguyen@email.com',   '2024-04-02 09:10:00'),
+('AMP-002', 'lan.tran@email.com',       '2024-04-08 12:00:00'),
+('AMP-003', 'marco.oliveira@email.com', '2024-04-15 17:00:00'),
+('AMP-004', 'noor.hassan@email.com',    '2024-05-01 10:30:00'),
+('AMP-001', 'olivia.brown@email.com',   '2024-05-10 14:00:00'),
+('AMP-002', 'peter.parker@email.com',   '2024-05-22 11:45:00'),
+('AMP-003', 'queen.park@email.com',     '2024-06-01 09:30:00'),
+('AMP-005', 'ryan.kim@email.com',       '2024-06-12 16:20:00'),
+('AMP-001', 'samuel.torres@email.com',  '2024-06-25 10:00:00'),
+('AMP-002', 'taro.suzuki@email.com',    '2024-07-04 13:15:00'),
+('AMP-004', 'uma.chen@email.com',       '2024-07-18 15:00:00'),
+('AMP-003', 'victor.wang@email.com',    '2024-08-01 11:30:00'); 
+ 
+-- =====================
+-- REDEEM (20 rows)
+-- =====================
+INSERT INTO REDEEM (email_member, kode_hadiah, timestamp) VALUES
+('alice.smith@email.com',    'RWD-001', '2024-01-20 10:00:00'),
+('bob.jones@email.com',      'RWD-002', '2024-01-25 14:30:00'),
+('citra.dewi@email.com',     'RWD-004', '2024-02-05 09:15:00'),
+('dian.pratama@email.com',   'RWD-005', '2024-02-18 11:00:00'),
+('frank.ocean@email.com',    'RWD-006', '2024-02-28 16:45:00'),
+('henry.lim@email.com',      'RWD-003', '2024-03-07 13:00:00'),
+('ivan.petrov@email.com',    'RWD-002', '2024-03-15 10:30:00'),
+('jose.garcia@email.com',    'RWD-007', '2024-03-25 15:00:00'),
+('karen.nguyen@email.com',   'RWD-008', '2024-04-04 08:30:00'),
+('lan.tran@email.com',       'RWD-009', '2024-04-10 12:15:00'),
+('marco.oliveira@email.com', 'RWD-010', '2024-04-20 17:00:00'),
+('noor.hassan@email.com',    'RWD-001', '2024-05-03 09:00:00'),
+('olivia.brown@email.com',   'RWD-004', '2024-05-12 14:45:00'),
+('peter.parker@email.com',   'RWD-002', '2024-05-24 11:30:00'),
+('queen.park@email.com',     'RWD-005', '2024-06-03 10:00:00'),
+('ryan.kim@email.com',       'RWD-006', '2024-06-14 16:00:00'),
+('samuel.torres@email.com',  'RWD-008', '2024-06-27 13:30:00'),
+('taro.suzuki@email.com',    'RWD-003', '2024-07-06 09:45:00'),
+('uma.chen@email.com',       'RWD-007', '2024-07-20 15:30:00'),
+('victor.wang@email.com',    'RWD-010', '2024-08-03 11:00:00');
+ 
+-- =====================
+-- CLAIM_MISSING_MILES (20 rows)
+-- =====================
+INSERT INTO CLAIM_MISSING_MILES
+    (email_member, email_staf, maskapai, bandara_asal, bandara_tujuan,
+     tanggal_penerbangan, flight_number, nomor_tiket, kelas_kabin, pnr,
+     status_penerimaan, timestamp)
+VALUES
+('alice.smith@email.com',    'yasmin.omar@email.com',     'GA', 'CGK', 'DPS', '2024-01-08', 'GA-401',  'TKT-GA-0001', 'Economy',  'PNR001', 'Diterima',  '2024-01-10 09:00:00'),
+('bob.jones@email.com',      'zaki.rahman@email.com',     'GA', 'CGK', 'SUB', '2024-01-15', 'GA-502',  'TKT-GA-0002', 'Business', 'PNR002', 'Diterima',  '2024-01-17 10:30:00'),
+('citra.dewi@email.com',     'aisha.malik@email.com',     'SQ', 'SIN', 'CGK', '2024-01-22', 'SQ-211',  'TKT-SQ-0001', 'Economy',  'PNR003', 'Menunggu',  '2024-01-24 08:45:00'),
+('dian.pratama@email.com',   'bilal.khan@email.com',      'SQ', 'CGK', 'SIN', '2024-02-03', 'SQ-212',  'TKT-SQ-0002', 'Economy',  'PNR004', 'Diterima',  '2024-02-05 11:00:00'),
+('frank.ocean@email.com',    'clara.johansson@email.com', 'MH', 'KUL', 'CGK', '2024-02-10', 'MH-730',  'TKT-MH-0001', 'Business', 'PNR005', 'Diterima',  '2024-02-12 14:15:00'),
+('henry.lim@email.com',      'david.lindqvist@email.com', 'MH', 'CGK', 'KUL', '2024-02-17', 'MH-731',  'TKT-MH-0002', 'Economy',  'PNR006', 'Ditolak',   '2024-02-19 09:30:00'),
+('ivan.petrov@email.com',    'elena.popescu@email.com',   'TG', 'BKK', 'CGK', '2024-02-24', 'TG-435',  'TKT-TG-0001', 'Economy',  'PNR007', 'Diterima',  '2024-02-26 13:00:00'),
+('jose.garcia@email.com',    'felix.ionescu@email.com',   'TG', 'CGK', 'BKK', '2024-03-02', 'TG-436',  'TKT-TG-0002', 'Business', 'PNR008', 'Menunggu',  '2024-03-04 10:00:00'),
+('karen.nguyen@email.com',   'gina.thomas@email.com',     'PR', 'MNL', 'CGK', '2024-03-09', 'PR-512',  'TKT-PR-0001', 'Economy',  'PNR009', 'Diterima',  '2024-03-11 15:30:00'),
+('lan.tran@email.com',       'harry.nguyen@email.com',    'PR', 'CGK', 'MNL', '2024-03-16', 'PR-513',  'TKT-PR-0002', 'Economy',  'PNR010', 'Ditolak',   '2024-03-18 08:00:00'),
+('marco.oliveira@email.com', 'yasmin.omar@email.com',     'GA', 'CGK', 'NRT', '2024-03-23', 'GA-870',  'TKT-GA-0003', 'Economy',  'PNR011', 'Menunggu',  '2024-03-25 12:00:00'),
+('noor.hassan@email.com',    'zaki.rahman@email.com',     'GA', 'DPS', 'CGK', '2024-04-01', 'GA-402',  'TKT-GA-0004', 'Economy',  'PNR012', 'Diterima',  '2024-04-03 09:15:00'),
+('olivia.brown@email.com',   'aisha.malik@email.com',     'SQ', 'SIN', 'LHR', '2024-04-08', 'SQ-321',  'TKT-SQ-0003', 'Economy',  'PNR013', 'Menunggu',  '2024-04-10 14:00:00'),
+('peter.parker@email.com',   'bilal.khan@email.com',      'SQ', 'LHR', 'SIN', '2024-04-15', 'SQ-322',  'TKT-SQ-0004', 'Business', 'PNR014', 'Diterima',  '2024-04-17 11:45:00'),
+('queen.park@email.com',     'clara.johansson@email.com', 'MH', 'KUL', 'ICN', '2024-04-22', 'MH-066',  'TKT-MH-0003', 'Economy',  'PNR015', 'Ditolak',   '2024-04-24 10:30:00'),
+('ryan.kim@email.com',       'david.lindqvist@email.com', 'MH', 'ICN', 'KUL', '2024-05-01', 'MH-067',  'TKT-MH-0004', 'Economy',  'PNR016', 'Diterima',  '2024-05-03 09:00:00'),
+('samuel.torres@email.com',  'elena.popescu@email.com',   'TG', 'BKK', 'NRT', '2024-05-10', 'TG-681',  'TKT-TG-0003', 'Economy',  'PNR017', 'Menunggu',  '2024-05-12 13:30:00'),
+('taro.suzuki@email.com',    'gina.thomas@email.com',     'PR', 'MNL', 'NRT', '2024-05-19', 'PR-822',  'TKT-PR-0003', 'Business', 'PNR018', 'Diterima',  '2024-05-21 16:00:00'),
+('uma.chen@email.com',       'harry.nguyen@email.com',    'PR', 'NRT', 'MNL', '2024-05-28', 'PR-823',  'TKT-PR-0004', 'Economy',  'PNR019', 'Diterima',  '2024-05-30 10:15:00'),
+('victor.wang@email.com',    'yasmin.omar@email.com',     'GA', 'CGK', 'HKG', '2024-06-05', 'GA-891',  'TKT-GA-0005', 'Business', 'PNR020', 'Menunggu',  '2024-06-07 14:00:00');
