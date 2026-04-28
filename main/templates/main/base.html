@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroMiles</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f6fa; color: #333; }
+        .navbar {
+            background: #0f2044;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            overflow: hidden;
+        }
+        .navbar .brand {
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            color: white; font-size: 1.1rem; font-weight: 700; text-decoration: none;
+        }
+        .navbar .brand span { color: #4da6ff; }
+        .nav-links { 
+            display: flex; 
+            align-items: center; 
+            gap: 2px; 
+            flex-wrap: nowrap;
+        }
+        .nav-links a {
+            color: #ccd6f6; 
+            text-decoration: none; 
+            padding: 6px 7px;
+            border-radius: 6px; 
+            font-size: 0.72rem; 
+            white-space: nowrap;
+        }
+        .nav-links a:hover, .nav-links a.active { color: white; background: rgba(255,255,255,0.1); }
+        .nav-links a.active { color: #4da6ff; }
+        .nav-logout { color: #e94560 !important; }
+        .subnav {
+            background: #0f2044; padding: 4px 32px 8px;
+            font-size: 0.78rem; color: #8899bb;
+        }
+        .subnav a { color: #4da6ff; text-decoration: none; }
+        .container { max-width: 1100px; margin: 28px auto; padding: 0 24px; }
+        .messages { margin-bottom: 16px; }
+        .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; font-size: 0.88rem; }
+        .alert-success { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
+        .alert-error { background: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <a class="brand" href="#"><span>✈</span> AeroMiles</a>
+    <div class="nav-links">
+        {% if role == 'member' %}
+            <a href="#">Dashboard</a>
+            <a href="#">Identitas Saya</a>
+            <a href="{% url 'claim_list' %}" class="{% if request.resolver_match.url_name == 'claim_list' %}active{% endif %}">Klaim Miles</a>
+            <a href="{% url 'transfer_list' %}" class="{% if request.resolver_match.url_name == 'transfer_list' %}active{% endif %}">Transfer Miles</a>
+            <a href="#">Redeem Hadiah</a>
+            <a href="#">Beli Package</a>
+            <a href="#">Info Tier</a>
+            <a href="{% url 'pengaturan_profile' %}" class="{% if request.resolver_match.url_name == 'pengaturan_profile' %}active{% endif %}">Pengaturan Profile</a>
+        {% elif role == 'staf' %}
+            <a href="#">Dashboard</a>
+            <a href="#">Kelola Member</a>
+            <a href="{% url 'staf_claim_list' %}" class="{% if request.resolver_match.url_name == 'staf_claim_list' %}active{% endif %}">Kelola Klaim</a>
+            <a href="#">Kelola Hadiah</a>
+            <a href="#">Kelola Mitra</a>
+            <a href="#">Laporan Transaksi</a>
+            <a href="{% url 'pengaturan_profile' %}" class="{% if request.resolver_match.url_name == 'pengaturan_profile' %}active{% endif %}">Pengaturan Profile</a>
+        {% endif %}
+        <a href="#" class="nav-logout">⇥ Logout</a>
+    </div>
+</nav>
+<div class="subnav">
+    Masuk sebagai <a href="#">{{ profil_nama }}</a> · {{ role|capfirst }}
+</div>
+{% if messages %}
+<div class="container">
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% block content %}{% endblock %}
+</body>
+</html>

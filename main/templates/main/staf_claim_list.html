@@ -1,0 +1,190 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<style>
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .page-header h1 { font-size: 1.4rem; color: #0f2044; font-weight: 700; }
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+    .filter-bar select, .filter-bar input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 7px; font-size: 0.85rem; }
+    .btn { padding: 8px 16px; border: none; border-radius: 7px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+    .btn-secondary { background: #f0f0f0; color: #333; }
+    .card { background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { padding: 13px 14px; text-align: left; font-size: 0.79rem; font-weight: 600; color: #666; border-bottom: 2px solid #f0f0f0; }
+    tbody td { padding: 13px 14px; font-size: 0.83rem; border-bottom: 1px solid #f7f7f7; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #fafbff; }
+    .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+    .badge-menunggu { background: #fff3cd; color: #856404; }
+    .badge-disetujui { background: #d1e7dd; color: #0f5132; }
+    .badge-ditolak { background: #f8d7da; color: #842029; }
+    .member-info { line-height: 1.5; }
+    .member-email { font-size: 0.75rem; color: #888; }
+    .action-btn { background: none; border: none; cursor: pointer; padding: 5px 7px; border-radius: 5px; font-size: 1rem; }
+    .action-btn:hover { background: #f0f0f0; }
+    .empty-state { text-align: center; padding: 48px; color: #aaa; font-size: 0.9rem; }
+
+    .modal-overlay { 
+        display: none; 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background: rgba(0,0,0,0.55); 
+        z-index: 1000; 
+        justify-content: center; 
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+     }
+    .modal-overlay.active { display: flex; }
+    .modal { 
+        background: white; 
+        border-radius: 14px; 
+        padding: 28px; 
+        width: 520px; 
+        max-width: 100%; 
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60 px rgba(0, 0, 0, 0, 2);
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-header h2 { font-size: 1.05rem; font-weight: 700; }
+    .modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #999; }
+    .modal-info { background: #f8f9fa; border-radius: 8px; padding: 14px; margin-bottom: 20px; font-size: 0.87rem; line-height: 1.8; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+    .btn-approve { background: #0f2044; color: white; padding: 9px 20px; border-radius: 7px; border: none; cursor: pointer; font-weight: 600; }
+    .btn-reject { background: #e74c3c; color: white; padding: 9px 20px; border-radius: 7px; border: none; cursor: pointer; font-weight: 600; }
+</style>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Kelola Klaim Missing Miles</h1>
+    </div>
+
+    <form method="GET" class="filter-bar">
+        <select name="status">
+            <option value="">Semua Status</option>
+            <option value="Menunggu" {% if status_filter == 'Menunggu' %}selected{% endif %}>Menunggu</option>
+            <option value="Disetujui" {% if status_filter == 'Disetujui' %}selected{% endif %}>Disetujui</option>
+            <option value="Ditolak" {% if status_filter == 'Ditolak' %}selected{% endif %}>Ditolak</option>
+        </select>
+        <select name="maskapai">
+            <option value="">Semua Maskapai</option>
+            {% for m in maskapai_list %}
+            <option value="{{ m.0 }}" {% if maskapai_filter == m.0 %}selected{% endif %}>{{ m.0 }} - {{ m.1 }}</option>
+            {% endfor %}
+        </select>
+        <input type="date" name="tanggal_dari" value="{{ tanggal_dari }}" placeholder="Dari Tanggal">
+        <input type="date" name="tanggal_sampai" value="{{ tanggal_sampai }}" placeholder="Sampai Tanggal">
+        <button type="submit" class="btn" style="background:#0f2044; color:white;">Filter</button>
+        <a href="{% url 'staf_claim_list' %}" class="btn btn-secondary">Reset</a>
+    </form>
+
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th>No. Klaim</th>
+                    <th>Member</th>
+                    <th>Maskapai</th>
+                    <th>Rute</th>
+                    <th>Tanggal</th>
+                    <th>Flight</th>
+                    <th>Kelas</th>
+                    <th>Tanggal Pengajuan</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in claims %}
+                <tr>
+                    <td>CLM-{{ c.0|stringformat:"03d" }}</td>
+                    <td>
+                        <div class="member-info">
+                            <div>{{ c.2 }}</div>
+                            <div class="member-email">{{ c.3 }}</div>
+                        </div>
+                    </td>
+                    <td>{{ c.4 }}</td>
+                    <td>{{ c.5 }}</td>
+                    <td>{{ c.6 }}</td>
+                    <td>{{ c.7 }}</td>
+                    <td>{{ c.8 }}</td>
+                    <td>{{ c.9|date:"Y-m-d H:i" }}</td>
+                    <td><span class="badge badge-{{ c.10|lower }}">{{ c.10 }}</span></td>
+                    <td>
+                        {% if c.10 == 'Menunggu' %}
+                        <button class="action-btn" title="Setujui"
+                            onclick="openSetujuiModal({{ c.0 }},'{{ c.2 }}','{{ c.5 }}','{{ c.8 }}')">✅</button>
+                        <button class="action-btn" title="Tolak"
+                            onclick="openTolakModal({{ c.0 }},'{{ c.2 }}','{{ c.5 }}','{{ c.8 }}')">❌</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="10" class="empty-state">Belum ada klaim.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Setujui -->
+<div class="modal-overlay" id="modalSetujui">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 style="color:#0f5132;">Setujui Klaim</h2>
+            <button class="modal-close" onclick="closeModal('modalSetujui')">✕</button>
+        </div>
+        <p style="font-size:0.87rem; color:#555; margin-bottom:14px;">Miles akan ditambahkan ke akun member sesuai rute dan kelas kabin.</p>
+        <div class="modal-info" id="infoSetujui"></div>
+        <form method="POST" id="formSetujui">
+            {% csrf_token %}
+            <input type="hidden" name="status" value="Disetujui">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalSetujui')">Batal</button>
+                <button type="submit" class="btn-approve">Setujui</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Tolak -->
+<div class="modal-overlay" id="modalTolak">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 style="color:#842029;">Tolak Klaim</h2>
+            <button class="modal-close" onclick="closeModal('modalTolak')">✕</button>
+        </div>
+        <p style="font-size:0.87rem; color:#555; margin-bottom:14px;">Klaim akan ditolak dan member akan diinformasikan.</p>
+        <div class="modal-info" id="infoTolak"></div>
+        <form method="POST" id="formTolak">
+            {% csrf_token %}
+            <input type="hidden" name="status" value="Ditolak">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modalTolak')">Batal</button>
+                <button type="submit" class="btn-reject">Tolak</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function openSetujuiModal(id, nama, rute, kelas) {
+    document.getElementById('formSetujui').action = `/staf/klaim/proses/${id}/`;
+    document.getElementById('infoSetujui').innerHTML =
+        `Klaim: CLM-${String(id).padStart(3,'0')}<br>Member: ${nama}<br>Rute: ${rute}<br>Kelas: ${kelas}`;
+    openModal('modalSetujui');
+}
+function openTolakModal(id, nama, rute, kelas) {
+    document.getElementById('formTolak').action = `/staf/klaim/proses/${id}/`;
+    document.getElementById('infoTolak').innerHTML =
+        `Klaim: CLM-${String(id).padStart(3,'0')}<br>Member: ${nama}<br>Rute: ${rute}<br>Kelas: ${kelas}`;
+    openModal('modalTolak');
+}
+</script>
+{% endblock %}
