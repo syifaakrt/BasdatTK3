@@ -1,0 +1,42 @@
+/* =====================
+   MITRA-SPECIFIC STYLES
+   (Extends style.css)
+===================== */
+
+/* Duration badge */
+.td-durasi {
+  font-size: 12px;
+  color: #4a5e78;
+}
+
+.durasi-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-weight: 500;
+  background: #e8f0fb;
+  color: #1a3a6e;
+}
+
+/* Email style */
+.td-email {
+  font-size: 12px;
+  color: #3a7fd4;
+}
+
+/* ID Penyedia style */
+.td-id {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5e78;
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+/* Mitra name */
+.td-nama-mitra {
+  font-weight: 500;
+  font-size: 13px;
+  color: #1a2540;
+}

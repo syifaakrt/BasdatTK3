@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}AeroMiles{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- NAVBAR STAFF -->
+  {% if role == 'staff' %}
+  <nav class="navbar">
+    <div class="navbar-left">
+      <div class="navbar-brand"><span class="brand-icon">✈</span> AeroMiles</div>
+      <div class="navbar-links">
+        <a href="{% url 'dashboard' %}"         class="nav-link {% block nav_dashboard %}{% endblock %}">Dashboard</a>
+        <a href="{% url 'kelola_member' %}"     class="nav-link {% block nav_member %}{% endblock %}">Kelola Member</a>
+        <a href="{% url 'kelola_klaim' %}"      class="nav-link {% block nav_klaim %}{% endblock %}">Kelola Klaim</a>
+        <a href="{% url 'kelola_hadiah' %}"     class="nav-link {% block nav_hadiah %}{% endblock %}">Kelola Hadiah</a>
+        <a href="{% url 'kelola_mitra' %}"      class="nav-link {% block nav_mitra %}{% endblock %}">Kelola Mitra</a>
+        <a href="{% url 'laporan_transaksi' %}" class="nav-link {% block nav_laporan %}{% endblock %}">Laporan Transaksi</a>
+        <a href="{% url 'pengaturan_profil' %}" class="nav-link {% block nav_profil %}{% endblock %}">Pengaturan Profil</a>
+      </div>
+    </div>
+    <a href="{% url 'logout' %}" class="nav-logout">→ Logout</a>
+  </nav>
+
+  <!-- NAVBAR MEMBER -->
+  {% elif role == 'member' %}
+  <nav class="navbar">
+    <div class="navbar-left">
+      <div class="navbar-brand"><span class="brand-icon">✈</span> AeroMiles</div>
+      <div class="navbar-links">
+        <a href="{% url 'dashboard' %}"         class="nav-link {% block nav_dashboard_m %}{% endblock %}">Dashboard</a>
+        <a href="{% url 'identitas_saya' %}"    class="nav-link {% block nav_identitas %}{% endblock %}">Identitas Saya</a>
+        <a href="{% url 'klaim_miles' %}"       class="nav-link {% block nav_klaim_m %}{% endblock %}">Klaim Miles</a>
+        <a href="{% url 'transfer_miles' %}"    class="nav-link {% block nav_transfer %}{% endblock %}">Transfer Miles</a>
+        <a href="{% url 'redeem_hadiah' %}"     class="nav-link {% block nav_redeem %}{% endblock %}">Redeem Hadiah</a>
+        <a href="{% url 'beli_package' %}"      class="nav-link {% block nav_package %}{% endblock %}">Beli Package</a>
+        <a href="{% url 'info_tier' %}"         class="nav-link {% block nav_tier %}{% endblock %}">Info Tier</a>
+        <a href="{% url 'pengaturan_profil' %}" class="nav-link {% block nav_profil_m %}{% endblock %}">Pengaturan Profil</a>
+      </div>
+    </div>
+    <a href="{% url 'logout' %}" class="nav-logout">→ Logout</a>
+  </nav>
+  {% endif %}
+
+  <div class="sub-navbar">
+    Masuk sebagai <span class="user-highlight">{{ nama_lengkap }}</span> · {{ role|capfirst }}
+  </div>
+
+  <div class="main-content">
+    {% block content %}{% endblock %}
+  </div>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - AeroMiles{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+{% block nav_dashboard_m %}active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'main/css/style_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="dash-header">
+    <h2 class="page-title">Dashboard</h2>
+    <p class="dash-welcome">Selamat datang, {{ nama_lengkap }}</p>
+  </div>
+
+  <!-- INFORMASI PRIBADI -->
+  <div class="dash-section">
+    <div class="section-title">Informasi Pribadi</div>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-label">Nama Lengkap:</div>
+        <div class="info-value">{{ nama_lengkap }}</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Email:</div>
+        <div class="info-value">{{ user.email }}</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Telepon:</div>
+        <div class="info-value">{{ user.country_code }} {{ user.mobile_number }}</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Kewarganegaraan:</div>
+        <div class="info-value">{{ user.kewarganegaraan }}</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Tanggal Lahir:</div>
+        <div class="info-value">{{ user.tanggal_lahir }}</div>
+      </div>
+      {% if role == 'member' %}
+      <div class="info-item">
+        <div class="info-label">Tanggal Bergabung:</div>
+        <div class="info-value">{{ member.tanggal_bergabung }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- MEMBER STATS -->
+  {% if role == 'member' %}
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">🪪</div>
+      <div>
+        <div class="stat-label">Nomor Member</div>
+        <div class="stat-value">{{ member.nomor_member }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🏅</div>
+      <div>
+        <div class="stat-label">Tier</div>
+        <div class="stat-value">
+          <span class="tier-badge tier-{{ tier_nama|lower }}">{{ tier_nama }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✈</div>
+      <div>
+        <div class="stat-label">Total Miles</div>
+        <div class="stat-value">{{ member.total_miles|default:0 }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🎁</div>
+      <div>
+        <div class="stat-label">Award Miles</div>
+        <div class="stat-value">{{ member.award_miles|default:0 }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <div class="section-title">5 Transaksi Terbaru</div>
+    <div class="transaksi-list">
+      {% for t in transaksi %}
+      <div class="transaksi-item">
+        <div class="transaksi-left">
+          <span class="transaksi-type type-{{ t.tipe|lower }}">{{ t.tipe }}</span>
+          <span class="transaksi-date">{{ t.tanggal }}</span>
+        </div>
+        <span class="transaksi-miles {% if t.miles > 0 %}miles-plus{% else %}miles-minus{% endif %}">
+          {% if t.miles > 0 %}+{% endif %}{{ t.miles }} miles
+        </span>
+      </div>
+      {% empty %}
+      <p style="color:#aab4c8; font-size:13px; text-align:center; padding:16px 0;">Belum ada transaksi.</p>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- STAFF STATS -->
+  {% if role == 'staff' %}
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">🪪</div>
+      <div>
+        <div class="stat-label">ID Staf</div>
+        <div class="stat-value">{{ staf.id_staf }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✈</div>
+      <div>
+        <div class="stat-label">Maskapai</div>
+        <div class="stat-value">{{ maskapai }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⏳</div>
+      <div>
+        <div class="stat-label">Klaim Menunggu</div>
+        <div class="stat-value">{{ klaim_menunggu }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div>
+        <div class="stat-label">Klaim Disetujui</div>
+        <div class="stat-value">{{ klaim_disetujui }}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">❌</div>
+      <div>
+        <div class="stat-label">Klaim Ditolak</div>
+        <div class="stat-value">{{ klaim_ditolak }}</div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'main/js/script_dashboard.js' %}"></script>
+{% endblock %}
