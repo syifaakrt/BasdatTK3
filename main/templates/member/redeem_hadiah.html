@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Redeem Hadiah | AeroMiles{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Member Feature</p>
+        <h1>Redeem Hadiah</h1>
+        <p class="page-description">
+            Lihat katalog hadiah, cek kebutuhan miles, dan pantau riwayat penukaran miles Anda.
+        </p>
+    </div>
+    <div class="highlight-box">
+        <span class="highlight-label">Award Miles Tersedia</span>
+        <strong class="highlight-value">{{ member_award_miles }}</strong>
+    </div>
+</section>
+
+<section class="content-grid two-columns">
+    <div class="section-card">
+        <div class="section-heading">
+            <h2>Katalog Hadiah</h2>
+            <span class="badge navy">Hadiah Tersedia</span>
+        </div>
+
+        <div class="catalog-grid">
+            {% for hadiah in hadiah_list %}
+            <article
+                class="catalog-card {% if hadiah.is_featured %}featured{% endif %}"
+                data-hadiah-card
+                data-kode="{{ hadiah.kode }}"
+                data-nama="{{ hadiah.nama }}"
+                data-penyedia="{{ hadiah.penyedia }}"
+                data-miles="{{ hadiah.miles }}"
+                data-sisa="{{ member_award_miles|add:hadiah.miles|add:'-10000' }}"
+            >
+                <div class="catalog-card-top">
+                    <div>
+                        <p class="catalog-code">{{ hadiah.kode }}</p>
+                        <h3>{{ hadiah.nama }}</h3>
+                    </div>
+                    <span class="miles-pill">{{ hadiah.miles }} miles</span>
+                </div>
+                <p class="muted-text">{{ hadiah.deskripsi }}</p>
+                <dl class="meta-list">
+                    <div>
+                        <dt>Penyedia</dt>
+                        <dd>{{ hadiah.penyedia }}</dd>
+                    </div>
+                    <div>
+                        <dt>Periode</dt>
+                        <dd>{{ hadiah.valid_start_date }} - {{ hadiah.program_end }}</dd>
+                    </div>
+                </dl>
+                <button
+                    class="primary-button"
+                    type="button"
+                    data-redeem-trigger
+                >
+                    Redeem
+                </button>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="stack-section">
+        <div class="section-card">
+            <div class="section-heading">
+                <h2>Konfirmasi Redeem</h2>
+                <span class="badge soft">Ringkasan</span>
+            </div>
+
+            <div class="confirmation-box" id="redeem-confirmation-box">
+                <p class="confirmation-title" id="selected-hadiah-nama">{{ selected_hadiah.nama }}</p>
+                <div class="confirmation-row">
+                    <span>Kode Hadiah</span>
+                    <strong id="selected-hadiah-kode">{{ selected_hadiah.kode }}</strong>
+                </div>
+                <div class="confirmation-row">
+                    <span>Penyedia</span>
+                    <strong id="selected-hadiah-penyedia">{{ selected_hadiah.penyedia }}</strong>
+                </div>
+                <div class="confirmation-row">
+                    <span>Miles Dipotong</span>
+                    <strong id="selected-hadiah-miles">{{ selected_hadiah.miles }} miles</strong>
+                </div>
+                <div class="confirmation-row">
+                    <span>Sisa Award Miles</span>
+                    <strong id="selected-hadiah-sisa">{{ remaining_miles_after_redeem }} miles</strong>
+                </div>
+                <p class="helper-text" id="redeem-helper-text">
+                    Pastikan award miles Anda mencukupi dan hadiah masih berada dalam periode penukaran.
+                </p>
+                <div class="button-row">
+                    <button class="secondary-button" type="button" id="redeem-cancel-button">Batal</button>
+                    <button class="primary-button" type="button" id="redeem-confirm-button">Konfirmasi Redeem</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-heading">
+                <h2>Riwayat Redeem</h2>
+                <span class="badge light">{{ redeem_history|length }} transaksi</span>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hadiah</th>
+                            <th>Kode Hadiah</th>
+                            <th>Timestamp</th>
+                            <th>Miles</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in redeem_history %}
+                        <tr>
+                            <td>{{ item.hadiah }}</td>
+                            <td>{{ item.kode_hadiah }}</td>
+                            <td>{{ item.timestamp }}</td>
+                            <td>{{ item.miles }}</td>
+                            <td><span class="status success">{{ item.status }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (() => {
+        const cards = document.querySelectorAll("[data-hadiah-card]");
+        const nameEl = document.getElementById("selected-hadiah-nama");
+        const kodeEl = document.getElementById("selected-hadiah-kode");
+        const penyediaEl = document.getElementById("selected-hadiah-penyedia");
+        const milesEl = document.getElementById("selected-hadiah-miles");
+        const sisaEl = document.getElementById("selected-hadiah-sisa");
+        const helperEl = document.getElementById("redeem-helper-text");
+        const cancelButton = document.getElementById("redeem-cancel-button");
+        const confirmButton = document.getElementById("redeem-confirm-button");
+
+        const setActiveCard = (selectedCard) => {
+            cards.forEach((card) => card.classList.remove("is-selected"));
+            selectedCard.classList.add("is-selected");
+            nameEl.textContent = selectedCard.dataset.nama;
+            kodeEl.textContent = selectedCard.dataset.kode;
+            penyediaEl.textContent = selectedCard.dataset.penyedia;
+            milesEl.textContent = `${selectedCard.dataset.miles} miles`;
+            sisaEl.textContent = `${selectedCard.dataset.sisa} miles`;
+            helperEl.textContent = `Hadiah ${selectedCard.dataset.kode} dipilih. Silakan periksa kembali detail penukaran sebelum melanjutkan.`;
+            confirmButton.textContent = `Konfirmasi Redeem ${selectedCard.dataset.kode}`;
+        };
+
+        cards.forEach((card) => {
+            card.querySelector("[data-redeem-trigger]").addEventListener("click", () => {
+                setActiveCard(card);
+            });
+        });
+
+        if (cards.length > 0) {
+            setActiveCard(cards[0]);
+        }
+
+        cancelButton.addEventListener("click", () => {
+            helperEl.textContent = "Pilih hadiah dari katalog untuk melihat ringkasan redeem.";
+            confirmButton.textContent = "Konfirmasi Redeem";
+        });
+
+        confirmButton.addEventListener("click", () => {
+            helperEl.textContent = "Permintaan redeem telah dikonfirmasi dan siap diproses sesuai detail hadiah yang dipilih.";
+        });
+    })();
+</script>
+{% endblock %}

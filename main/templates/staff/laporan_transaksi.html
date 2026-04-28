@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Laporan Transaksi | AeroMiles{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Staff Feature</p>
+        <h1>Laporan & Riwayat Transaksi Miles</h1>
+        <p class="page-description">
+            Pantau transaksi miles, tampilkan statistik sistem, dan lihat top member berdasarkan aktivitas.
+        </p>
+    </div>
+</section>
+
+<section class="summary-panel">
+    <div class="summary-card primary">
+        <span class="summary-label">Total Miles Beredar</span>
+        <strong>{{ stats.total_miles_beredar }}</strong>
+        <p>Akumulasi miles seluruh member</p>
+    </div>
+    <div class="summary-card">
+        <span class="summary-label">Redeem Bulan Ini</span>
+        <strong>{{ stats.total_redeem_bulan_ini }}</strong>
+        <p>Total transaksi redeem</p>
+    </div>
+    <div class="summary-card">
+        <span class="summary-label">Klaim Disetujui</span>
+        <strong>{{ stats.total_klaim_disetujui }}</strong>
+        <p>Total claim approved</p>
+    </div>
+</section>
+
+<section class="section-card">
+    <div class="section-heading">
+        <h2>Filter Transaksi</h2>
+        <span class="badge soft">Filter</span>
+    </div>
+
+    <form class="filter-grid" id="transaction-filter-form">
+        <div class="form-group">
+            <label for="tipe">Tipe Transaksi</label>
+            <select id="tipe">
+                <option>Semua</option>
+                <option>Transfer</option>
+                <option>Redeem</option>
+                <option>Pembelian Package</option>
+                <option>Klaim Disetujui</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="member">Member</label>
+            <select id="member">
+                <option>Semua Member</option>
+                <option>alice.smith@email.com</option>
+                <option>bob.jones@email.com</option>
+                <option>citra.dewi@email.com</option>
+                <option>queen.park@email.com</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="start-date">Tanggal Awal</label>
+            <input id="start-date" type="date" value="{{ filters.date_start }}">
+        </div>
+
+        <div class="form-group">
+            <label for="end-date">Tanggal Akhir</label>
+            <input id="end-date" type="date" value="{{ filters.date_end }}">
+        </div>
+
+        <div class="form-group action-align">
+            <button type="button" class="primary-button" id="apply-filter-button">Terapkan Filter</button>
+        </div>
+    </form>
+</section>
+
+<section class="section-card">
+    <div class="section-heading">
+        <h2>Rekap Transaksi Miles</h2>
+        <span class="badge navy">{{ transactions|length }} baris</span>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipe Transaksi</th>
+                    <th>Member</th>
+                    <th>Jumlah Miles</th>
+                    <th>Timestamp</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="transaction-table-body">
+                {% for item in transactions %}
+                <tr data-transaction-row>
+                    <td data-column="type">{{ item.tipe }}</td>
+                    <td data-column="member">{{ item.member }}</td>
+                    <td>{{ item.jumlah_miles }}</td>
+                    <td>{{ item.timestamp }}</td>
+                    <td>
+                        {% if item.dapat_dihapus %}
+                            <button class="danger-button small" type="button" data-delete-trigger>Hapus</button>
+                        {% else %}
+                            <span class="status neutral">Tidak dapat dihapus</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="warning-box" id="transaction-feedback">
+        <strong>Peringatan:</strong>
+        Penghapusan riwayat transaksi bersifat permanen dan akan memengaruhi tampilan riwayat yang dilihat member.
+    </div>
+</section>
+
+<section class="content-grid two-columns">
+    <div class="section-card">
+        <div class="section-heading">
+            <h2>Top Member by Total Miles</h2>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Total Miles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in top_total_miles %}
+                    <tr>
+                        <td>{{ item.member }}</td>
+                        <td>{{ item.total_miles }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-heading">
+            <h2>Top Member by Activity</h2>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Aktivitas</th>
+                        <th>Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in top_activity %}
+                    <tr>
+                        <td>{{ item.member }}</td>
+                        <td>{{ item.aktivitas }}</td>
+                        <td>{{ item.jumlah }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (() => {
+        const typeSelect = document.getElementById("tipe");
+        const memberSelect = document.getElementById("member");
+        const applyButton = document.getElementById("apply-filter-button");
+        const rows = document.querySelectorAll("[data-transaction-row]");
+        const feedback = document.getElementById("transaction-feedback");
+
+        applyButton.addEventListener("click", () => {
+            const selectedType = typeSelect.value;
+            const selectedMember = memberSelect.value;
+            let visibleRows = 0;
+
+            rows.forEach((row) => {
+                const rowType = row.querySelector('[data-column="type"]').textContent.trim();
+                const rowMember = row.querySelector('[data-column="member"]').textContent.trim();
+
+                const typeMatch = selectedType === "Semua" || rowType === selectedType;
+                const memberMatch = selectedMember === "Semua Member" || rowMember === selectedMember;
+                const shouldShow = typeMatch && memberMatch;
+
+                row.style.display = shouldShow ? "" : "none";
+                if (shouldShow) {
+                    visibleRows += 1;
+                }
+            });
+
+            feedback.innerHTML = `<strong>Filter diterapkan:</strong> ${visibleRows} transaksi ditampilkan untuk kombinasi filter saat ini.`;
+        });
+
+        document.querySelectorAll("[data-delete-trigger]").forEach((button) => {
+            button.addEventListener("click", () => {
+                const row = button.closest("[data-transaction-row]");
+                const transactionType = row.querySelector('[data-column="type"]').textContent.trim();
+                const member = row.querySelector('[data-column="member"]').textContent.trim();
+
+                row.remove();
+                feedback.innerHTML = `<strong>Riwayat diperbarui:</strong> transaksi ${transactionType} milik ${member} telah dihapus dari tampilan laporan.`;
+            });
+        });
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+<nav class="navbar">
+    <div class="navbar-brand">
+        <div class="brand-mark">AM</div>
+        <div>
+            <p class="brand-title">AeroMiles</p>
+            <p class="brand-subtitle">
+                {% if role == "staff" %}
+                    Staff Portal
+                {% else %}
+                    Member Portal
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <div class="navbar-menu">
+        {% for item in nav_items %}
+            <a href="{{ item.href }}" class="nav-link {% if item.label == current_page %}active{% endif %}">
+                {{ item.label }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <div class="navbar-user">
+        <p class="navbar-user-name">{{ user_name }}</p>
+        <p class="navbar-user-code">{{ user_code }}</p>
+    </div>
+</nav>

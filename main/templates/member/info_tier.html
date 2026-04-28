@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Info Tier | AeroMiles{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Member Feature</p>
+        <h1>Informasi Tier & Keuntungan</h1>
+        <p class="page-description">
+            Lihat semua tier AeroMiles, tier member saat ini, dan kebutuhan miles untuk naik tier berikutnya.
+        </p>
+    </div>
+</section>
+
+<section class="summary-panel">
+    <div class="summary-card primary">
+        <span class="summary-label">Member</span>
+        <strong>{{ current_member.nama }}</strong>
+        <p>{{ current_member.nomor_member }}</p>
+    </div>
+    <div class="summary-card">
+        <span class="summary-label">Tier Saat Ini</span>
+        <strong>{{ current_member.current_tier }}</strong>
+        <p>{{ current_member.tier_miles }} tier miles</p>
+    </div>
+    <div class="summary-card">
+        <span class="summary-label">Tier Berikutnya</span>
+        <strong>{{ current_member.next_tier }}</strong>
+        <p>{{ current_member.miles_to_next_tier }} miles lagi</p>
+    </div>
+</section>
+
+<section class="content-grid single-column">
+    <div class="section-card">
+        <div class="section-heading">
+            <h2>Daftar Tier</h2>
+            <span class="badge navy">Data dari dummy_data.sql</span>
+        </div>
+
+        <div class="tier-grid">
+            {% for tier in tier_list %}
+            <article class="tier-card {% if tier.nama == current_member.current_tier %}active-tier{% endif %}">
+                <p class="catalog-code">{{ tier.id_tier }}</p>
+                <h3>{{ tier.nama }}</h3>
+                <div class="tier-stats">
+                    <div>
+                        <span>Minimal Frekuensi Terbang</span>
+                        <strong>{{ tier.minimal_frekuensi_terbang }}</strong>
+                    </div>
+                    <div>
+                        <span>Minimal Tier Miles</span>
+                        <strong>{{ tier.minimal_tier_miles }}</strong>
+                    </div>
+                </div>
+
+                {% if tier.nama == current_member.current_tier %}
+                    <span class="status info">Tier Saat Ini</span>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

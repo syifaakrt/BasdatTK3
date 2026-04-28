@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Beli Package | AeroMiles{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Member Feature</p>
+        <h1>Pembelian Award Miles Package</h1>
+        <p class="page-description">
+            Lihat daftar package, pilih package yang sesuai, dan pantau riwayat pembelian award miles.
+        </p>
+    </div>
+    <div class="highlight-box">
+        <span class="highlight-label">Award Miles Saat Ini</span>
+        <strong class="highlight-value">{{ member_award_miles }}</strong>
+    </div>
+</section>
+
+<section class="content-grid two-columns">
+    <div class="section-card">
+        <div class="section-heading">
+            <h2>Katalog Package</h2>
+            <span class="badge navy">Package Tersedia</span>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Paket</th>
+                        <th>Jumlah Award Miles</th>
+                        <th>Harga Paket</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for package in packages %}
+                    <tr
+                        data-package-row
+                        data-id="{{ package.id }}"
+                        data-miles="{{ package.jumlah_award_miles }}"
+                        data-harga="{{ package.harga_paket }}"
+                        data-total="{{ member_award_miles|add:package.jumlah_award_miles }}"
+                    >
+                        <td>{{ package.id }}</td>
+                        <td>{{ package.jumlah_award_miles }}</td>
+                        <td>Rp{{ package.harga_paket }}</td>
+                        <td><button class="primary-button small" type="button" data-buy-trigger>Beli</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="stack-section">
+        <div class="section-card">
+            <div class="section-heading">
+                <h2>Konfirmasi Pembelian</h2>
+                <span class="badge soft">Ringkasan</span>
+            </div>
+
+            <div class="confirmation-box">
+                <p class="confirmation-title" id="selected-package-id">{{ selected_package.id }}</p>
+                <div class="confirmation-row">
+                    <span>Jumlah Award Miles</span>
+                    <strong id="selected-package-miles">{{ selected_package.jumlah_award_miles }}</strong>
+                </div>
+                <div class="confirmation-row">
+                    <span>Harga Paket</span>
+                    <strong id="selected-package-price">Rp{{ selected_package.harga_paket }}</strong>
+                </div>
+                <div class="confirmation-row">
+                    <span>Total Setelah Pembelian</span>
+                    <strong id="selected-package-total">{{ total_after_purchase }} miles</strong>
+                </div>
+                <p class="helper-text" id="package-helper-text">
+                    Periksa kembali jumlah miles dan harga paket sebelum menyelesaikan pembelian.
+                </p>
+                <div class="button-row">
+                    <button class="secondary-button" type="button" id="package-cancel-button">Batal</button>
+                    <button class="primary-button" type="button" id="package-confirm-button">Konfirmasi Beli</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-heading">
+                <h2>Riwayat Pembelian</h2>
+                <span class="badge light">{{ purchase_history|length }} transaksi</span>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Paket</th>
+                            <th>Timestamp</th>
+                            <th>Award Miles</th>
+                            <th>Harga</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in purchase_history %}
+                        <tr>
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.timestamp }}</td>
+                            <td>{{ item.jumlah_award_miles }}</td>
+                            <td>Rp{{ item.harga_paket }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (() => {
+        const rows = document.querySelectorAll("[data-package-row]");
+        const idEl = document.getElementById("selected-package-id");
+        const milesEl = document.getElementById("selected-package-miles");
+        const priceEl = document.getElementById("selected-package-price");
+        const totalEl = document.getElementById("selected-package-total");
+        const helperEl = document.getElementById("package-helper-text");
+        const cancelButton = document.getElementById("package-cancel-button");
+        const confirmButton = document.getElementById("package-confirm-button");
+
+        const setActiveRow = (row) => {
+            rows.forEach((item) => item.classList.remove("is-selected-row"));
+            row.classList.add("is-selected-row");
+            idEl.textContent = row.dataset.id;
+            milesEl.textContent = row.dataset.miles;
+            priceEl.textContent = `Rp${row.dataset.harga}`;
+            totalEl.textContent = `${row.dataset.total} miles`;
+            helperEl.textContent = `Package ${row.dataset.id} dipilih. Pastikan detail pembelian sudah sesuai sebelum melanjutkan.`;
+            confirmButton.textContent = `Konfirmasi Beli ${row.dataset.id}`;
+        };
+
+        rows.forEach((row) => {
+            row.querySelector("[data-buy-trigger]").addEventListener("click", () => {
+                setActiveRow(row);
+            });
+        });
+
+        if (rows.length > 0) {
+            setActiveRow(rows[0]);
+        }
+
+        cancelButton.addEventListener("click", () => {
+            helperEl.textContent = "Pilih package dari tabel untuk melihat ringkasan pembelian.";
+            confirmButton.textContent = "Konfirmasi Beli";
+        });
+
+        confirmButton.addEventListener("click", () => {
+            helperEl.textContent = "Pembelian package telah dikonfirmasi dan penambahan award miles siap diproses.";
+        });
+    })();
+</script>
+{% endblock %}
