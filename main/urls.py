@@ -8,6 +8,6 @@ urlpatterns = [
     #path('login', login)
     path('register/', register_view, name='register'),
     path('login/', login_view, name='login'),
-    path('member/kelola/', kelola_member, name='kelola_member'),
+    path('staf/kelola/', kelola_member, name='kelola_member'),
     path('member/identitas/', identitas, name='identitas')
 ]
