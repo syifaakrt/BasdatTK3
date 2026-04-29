@@ -5,88 +5,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - AeroMiles</title>
-  <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
-  <style>
-    body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f0f2f5; }
-    .login-box {
-      background: #fff;
-      border-radius: 14px;
-      padding: 36px 32px;
-      width: 360px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
-    }
-    .login-brand {
-      font-size: 20px;
-      font-weight: 700;
-      color: #0f1f3d;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .login-sub {
-      font-size: 13px;
-      color: #7a8ca8;
-      margin-bottom: 28px;
-    }
-    .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
-    .form-group label { font-size: 12px; color: #7a8ca8; font-weight: 500; }
-    .form-group input {
-      padding: 9px 12px;
-      border: 1px solid #dde2ec;
-      border-radius: 7px;
-      font-size: 13px;
-      color: #1a2540;
-      outline: none;
-      transition: border 0.15s;
-    }
-    .form-group input:focus { border-color: #1a3a6e; }
-    .btn-login {
-      width: 100%;
-      padding: 10px;
-      background: #1a3a6e;
-      color: #fff;
-      border: none;
-      border-radius: 7px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 6px;
-      transition: background 0.15s;
-    }
-    .btn-login:hover { background: #22509e; }
-    .error-msg {
-      background: #fde8e8;
-      color: #8b1a1a;
-      font-size: 12px;
-      padding: 8px 12px;
-      border-radius: 6px;
-      margin-bottom: 14px;
-    }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="login-box">
-    <div class="login-brand"><span>✈</span> AeroMiles</div>
-    <div class="login-sub">Masuk ke akun Anda</div>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen font-sans">
+  <div class="bg-white rounded-2xl p-9 w-[360px] shadow-xl">
+    <div class="text-xl font-bold text-[#0f1f3d] mb-1 flex items-center gap-2">✈ AeroMiles</div>
+    <div class="text-sm text-[#7a8ca8] mb-7">Masuk ke akun Anda</div>
 
     {% if messages %}
       {% for message in messages %}
-      <div class="error-msg">{{ message }}</div>
+      <div class="bg-red-50 text-red-800 text-xs px-3 py-2 rounded-md mb-3">{{ message }}</div>
       {% endfor %}
     {% endif %}
 
     <form method="post" action="{% url 'login' %}">
       {% csrf_token %}
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" name="email" placeholder="email@example.com" required autofocus>
+      <div class="flex flex-col gap-1.5 mb-3.5">
+        <label class="text-xs text-[#7a8ca8] font-medium">Email</label>
+        <input type="email" name="email" placeholder="email@example.com" required autofocus
+          class="px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-[#1a2540] outline-none focus:border-[#1a3a6e] transition">
       </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" name="password" placeholder="Password" required>
+      <div class="flex flex-col gap-1.5 mb-5">
+        <label class="text-xs text-[#7a8ca8] font-medium">Password</label>
+        <input type="password" name="password" placeholder="Password" required
+          class="px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-[#1a2540] outline-none focus:border-[#1a3a6e] transition">
       </div>
-      <button type="submit" class="btn-login">Masuk</button>
+      <button type="submit"
+        class="w-full py-2.5 bg-[#1a3a6e] hover:bg-[#22509e] text-white text-sm font-semibold rounded-lg transition">
+        Masuk
+      </button>
     </form>
   </div>
 </body>

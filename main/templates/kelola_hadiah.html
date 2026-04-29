@@ -2,66 +2,64 @@
 {% load static %}
 
 {% block title %}Kelola Hadiah - AeroMiles{% endblock %}
-{% block nav_hadiah %}active{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'main/js/script.js' %}"></script>
-{% endblock %}
+{% block nav_hadiah %}bg-[#1a3a6e] !text-white{% endblock %}
 
 {% block content %}
 
   <!-- PAGE HEADER -->
-  <div class="page-header">
-    <h2 class="page-title">Kelola Hadiah &amp; Penyedia</h2>
-    <button class="btn-add" onclick="openCreate()">+ Tambah Hadiah</button>
+  <div class="flex justify-between items-center mb-5">
+    <h2 class="text-xl font-semibold text-[#1a2540]">Kelola Hadiah &amp; Penyedia</h2>
+    <button onclick="openCreate()" class="bg-[#1a3a6e] hover:bg-[#22509e] text-white text-sm font-medium px-4 py-2 rounded-lg transition">+ Tambah Hadiah</button>
   </div>
 
   <!-- OVERVIEW CARDS -->
-  <div class="cards-wrapper">
-    <div class="cards-grid">
-      <div class="card">
-        <div class="card-label">Total Hadiah</div>
-        <div class="card-value" id="totalHadiah">0</div>
-        <div class="card-sub">hadiah terdaftar</div>
+  <div class="bg-[#0f1f3d] rounded-xl p-4 mb-5">
+    <div class="grid grid-cols-4 gap-3">
+      <div class="bg-white rounded-lg p-4">
+        <div class="text-xs text-[#7a8ca8] mb-1">Total Hadiah</div>
+        <div class="text-3xl font-semibold text-[#1a2540]" id="totalHadiah">0</div>
+        <div class="text-[11px] text-[#aab4c8] mt-1">hadiah terdaftar</div>
       </div>
-      <div class="card">
-        <div class="card-label">Hadiah Aktif</div>
-        <div class="card-value green" id="hadiahAktif">0</div>
-        <div class="card-sub">masih berlaku</div>
+      <div class="bg-white rounded-lg p-4">
+        <div class="text-xs text-[#7a8ca8] mb-1">Hadiah Aktif</div>
+        <div class="text-3xl font-semibold text-green-700" id="hadiahAktif">0</div>
+        <div class="text-[11px] text-[#aab4c8] mt-1">masih berlaku</div>
       </div>
-      <div class="card">
-        <div class="card-label">Sudah Expired</div>
-        <div class="card-value red" id="hadiahExpired">0</div>
-        <div class="card-sub">sudah kadaluarsa</div>
+      <div class="bg-white rounded-lg p-4">
+        <div class="text-xs text-[#7a8ca8] mb-1">Sudah Expired</div>
+        <div class="text-3xl font-semibold text-red-700" id="hadiahExpired">0</div>
+        <div class="text-[11px] text-[#aab4c8] mt-1">sudah kadaluarsa</div>
       </div>
-      <div class="card">
-        <div class="card-label">Total Miles</div>
-        <div class="card-value" id="totalMiles">0</div>
-        <div class="card-sub">miles dibutuhkan</div>
+      <div class="bg-white rounded-lg p-4">
+        <div class="text-xs text-[#7a8ca8] mb-1">Total Miles</div>
+        <div class="text-3xl font-semibold text-[#1a2540]" id="totalMiles">0</div>
+        <div class="text-[11px] text-[#aab4c8] mt-1">miles dibutuhkan</div>
       </div>
     </div>
   </div>
 
   <!-- TABLE SECTION -->
-  <div class="table-wrap">
-    <div class="table-filters">
-      <input type="text" id="searchInput" class="search-input" placeholder="Cari nama hadiah..." oninput="filterTable()">
-      <select id="filterStatus" class="filter-select" onchange="filterTable()">
+  <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="flex gap-2.5 p-3.5 border-b border-gray-200 flex-wrap">
+      <input type="text" id="searchInput" oninput="filterTable()" placeholder="Cari nama hadiah..."
+        class="flex-1 max-w-[220px] px-3 py-1.5 border border-gray-300 rounded-md text-sm text-[#1a2540] outline-none focus:border-[#1a3a6e]">
+      <select id="filterStatus" onchange="filterTable()"
+        class="px-3 py-1.5 border border-gray-300 rounded-md text-sm text-[#1a2540] outline-none focus:border-[#1a3a6e] cursor-pointer">
         <option value="">Semua Status</option>
         <option value="Aktif">Aktif</option>
         <option value="Expired">Expired</option>
       </select>
     </div>
-    <table>
+    <table class="w-full border-collapse">
       <thead>
-        <tr>
-          <th>Kode</th>
-          <th>Nama &amp; Deskripsi</th>
-          <th>Miles</th>
-          <th>Tgl Mulai</th>
-          <th>Tgl Akhir</th>
-          <th>Status</th>
-          <th>Aksi</th>
+        <tr class="bg-gray-50">
+          <th class="text-xs text-[#7a8ca8] font-medium px-3.5 py-2.5 text-left border-b border-gray-200">Kode</th>
+          <th class="text-xs text-[#7a8ca8] font-medium px-3.5 py-2.5 text-left border-b border-gray-200">Nama &amp; Deskripsi</th>
+          <th class="text-xs text-[#7a8ca8] font-medium px-3.5 py-2.5 text-left border-b border-gray-200">Miles</th>
+          <th class="text-xs text-[#7a8ca8] font-medium px-3.5 py-2.5 text-left border-b border-gray-200">Tgl Mulai</th>
+          <th class="text-xs text-[#7a8ca8] font-medium px-3.5 py-2.5 text-left border-b border-gray-200">Tgl Akhir</th>
+          <th class="text-xs text-[#7a8ca8] font-medium px-3.5 py-2.5 text-left border-b border-gray-200">Status</th>
+          <th class="text-xs text-[#7a8ca8] font-medium px-3.5 py-2.5 text-left border-b border-gray-200">Aksi</th>
         </tr>
       </thead>
       <tbody id="hadiahTable"></tbody>
@@ -69,36 +67,65 @@
   </div>
 
   <!-- MODAL FORM -->
-  <div id="modalForm" class="modal">
-    <div class="modal-content">
-      <h3 id="modalTitle">Tambah Hadiah</h3>
-      <div class="form-group">
-        <label>Nama Hadiah</label>
-        <input id="nama" type="text" placeholder="Nama hadiah">
+  <div id="modalForm" class="hidden fixed inset-0 bg-[rgba(10,20,50,0.4)] flex justify-center items-center z-50">
+    <div class="bg-white p-7 rounded-xl w-[420px] max-w-[95vw] flex flex-col gap-3.5 shadow-2xl">
+      <h3 class="text-base font-semibold text-[#1a2540]" id="modalTitle">Tambah Hadiah</h3>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs text-[#7a8ca8] font-medium">Nama Hadiah</label>
+        <input id="nama" type="text" placeholder="Nama hadiah" class="px-3 py-2 border border-gray-300 rounded-md text-sm text-[#1a2540] outline-none focus:border-[#1a3a6e]">
       </div>
-      <div class="form-group">
-        <label>Miles</label>
-        <input id="miles" type="number" placeholder="Jumlah miles">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs text-[#7a8ca8] font-medium">Miles</label>
+        <input id="miles" type="number" placeholder="Jumlah miles" class="px-3 py-2 border border-gray-300 rounded-md text-sm text-[#1a2540] outline-none focus:border-[#1a3a6e]">
       </div>
-      <div class="form-group">
-        <label>Deskripsi</label>
-        <input id="deskripsi" type="text" placeholder="Deskripsi singkat">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs text-[#7a8ca8] font-medium">Deskripsi</label>
+        <input id="deskripsi" type="text" placeholder="Deskripsi singkat" class="px-3 py-2 border border-gray-300 rounded-md text-sm text-[#1a2540] outline-none focus:border-[#1a3a6e]">
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Tanggal Mulai</label>
-          <input id="mulai" type="date">
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs text-[#7a8ca8] font-medium">Tanggal Mulai</label>
+          <input id="mulai" type="date" class="px-3 py-2 border border-gray-300 rounded-md text-sm text-[#1a2540] outline-none focus:border-[#1a3a6e]">
         </div>
-        <div class="form-group">
-          <label>Tanggal Akhir</label>
-          <input id="akhir" type="date">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs text-[#7a8ca8] font-medium">Tanggal Akhir</label>
+          <input id="akhir" type="date" class="px-3 py-2 border border-gray-300 rounded-md text-sm text-[#1a2540] outline-none focus:border-[#1a3a6e]">
         </div>
       </div>
-      <div class="modal-buttons">
-        <button class="btn-cancel" onclick="closeModal()">Batal</button>
-        <button class="btn-save" onclick="saveHadiah()">Simpan</button>
+      <div class="flex justify-end gap-2.5 mt-1">
+        <button onclick="closeModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-[#4a5e78] text-sm rounded-md transition">Batal</button>
+        <button onclick="saveHadiah()" class="px-4 py-2 bg-[#1a3a6e] hover:bg-[#22509e] text-white text-sm font-medium rounded-md transition">Simpan</button>
       </div>
     </div>
   </div>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Modal helpers — override show/hide to use Tailwind classes
+function openModal() { document.getElementById('modalForm').classList.remove('hidden'); document.getElementById('modalForm').classList.add('flex'); }
+function closeModal() { document.getElementById('modalForm').classList.add('hidden'); document.getElementById('modalForm').classList.remove('flex'); }
+document.getElementById('modalForm').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+</script>
+<script src="{% static 'main/js/script.js' %}"></script>
+<script>
+// Patch openCreate and openEdit to use new modal helpers
+const _origOpenCreate = openCreate;
+const _origOpenEdit = openEdit;
+openCreate = function() { _origOpenCreate(); document.getElementById('modalForm').classList.remove('hidden'); document.getElementById('modalForm').classList.add('flex'); }
+openEdit = function(i) { _origOpenEdit(i); document.getElementById('modalForm').classList.remove('hidden'); document.getElementById('modalForm').classList.add('flex'); }
+
+// Patch table rendering for Tailwind classes
+const _origRenderTable = renderTable;
+renderTable = function(data) {
+  _origRenderTable(data);
+  // Re-style tbody rows
+  document.querySelectorAll('#hadiahTable tr').forEach(tr => {
+    tr.classList.add('hover:bg-gray-50', 'border-b', 'border-gray-100', 'last:border-0');
+    tr.querySelectorAll('td').forEach(td => { td.classList.add('px-3.5', 'py-2.5', 'text-sm', 'align-middle'); });
+  });
+}
+renderTable();
+</script>
 {% endblock %}

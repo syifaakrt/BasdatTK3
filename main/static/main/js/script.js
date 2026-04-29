@@ -8,10 +8,10 @@ let hadiahData = [
   { kode: 'RWD-004', nama: 'Akses Lounge 1x',            miles: 3000,  deskripsi: 'Akses lounge seluruh bandara partner ShopeeTravel 1 kali masuk',    mulai: '2024-01-01', akhir: '2025-12-31' },
   { kode: 'RWD-005', nama: 'Diskon Hotel 30%',           miles: 5000,  deskripsi: 'Diskon 30% pemesanan hotel melalui Traveloka partner program',       mulai: '2024-03-01', akhir: '2025-12-31' },
   { kode: 'RWD-006', nama: 'Tiket Singapore Airlines',   miles: 20000, deskripsi: 'Tiket penerbangan Singapore Airlines rute Asia Tenggara',            mulai: '2024-01-01', akhir: '2026-01-31' },
-  { kode: 'RWD-007', nama: 'Free Bagasi 10kg SQ',        miles: 6000,  deskripsi: 'Extra bagasi 10kg untuk penerbangan Singapore Airlines',            mulai: '2024-04-01', akhir: '2025-09-30' },
-  { kode: 'RWD-008', nama: 'Voucher Agoda Rp 300.000',   miles: 4000,  deskripsi: 'Voucher pemesanan hotel melalui Agoda senilai Rp 300.000',          mulai: '2024-07-01', akhir: '2025-07-31' },
-  { kode: 'RWD-009', nama: 'Tiket Pesawat TiketPartner', miles: 12000, deskripsi: 'Tiket pesawat domestik maupun internasional via Tiket.com',         mulai: '2024-01-01', akhir: '2025-12-31' },
-  { kode: 'RWD-010', nama: 'Akses Lounge Premium MH',    miles: 7000,  deskripsi: 'Akses Malaysia Airlines Golden Lounge di Kuala Lumpur',             mulai: '2024-02-01', akhir: '2025-12-31' },
+  { kode: 'RWD-007', nama: 'Free Bagasi 10kg SQ',        miles: 6000,  deskripsi: 'Extra bagasi 10kg untuk penerbangan Singapore Airlines',             mulai: '2024-04-01', akhir: '2025-09-30' },
+  { kode: 'RWD-008', nama: 'Voucher Agoda Rp 300.000',   miles: 4000,  deskripsi: 'Voucher pemesanan hotel melalui Agoda senilai Rp 300.000',           mulai: '2024-07-01', akhir: '2025-07-31' },
+  { kode: 'RWD-009', nama: 'Tiket Pesawat TiketPartner', miles: 12000, deskripsi: 'Tiket pesawat domestik maupun internasional via Tiket.com',          mulai: '2024-01-01', akhir: '2025-12-31' },
+  { kode: 'RWD-010', nama: 'Akses Lounge Premium MH',    miles: 7000,  deskripsi: 'Akses Malaysia Airlines Golden Lounge di Kuala Lumpur',              mulai: '2024-02-01', akhir: '2025-12-31' },
 ];
 
 let editIndex = null;
@@ -36,6 +36,25 @@ function generateKode() {
 }
 
 // =====================
+// MODAL HELPERS (Tailwind)
+// =====================
+function showModal() {
+  const m = document.getElementById('modalForm');
+  m.classList.remove('hidden');
+  m.classList.add('flex');
+}
+
+function closeModal() {
+  const m = document.getElementById('modalForm');
+  m.classList.add('hidden');
+  m.classList.remove('flex');
+}
+
+document.getElementById('modalForm').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// =====================
 // RENDER TABLE
 // =====================
 function renderTable(data) {
@@ -44,44 +63,48 @@ function renderTable(data) {
   tbody.innerHTML = '';
 
   let aktif = 0, expired = 0, totalMiles = 0;
-
-  // Always compute stats from full hadiahData (not filtered)
   hadiahData.forEach(h => {
     const s = getStatus(h.akhir);
     if (s === 'Aktif') aktif++; else expired++;
     totalMiles += Number(h.miles);
   });
 
-  document.getElementById('totalHadiah').textContent  = hadiahData.length;
-  document.getElementById('hadiahAktif').textContent  = aktif;
+  document.getElementById('totalHadiah').textContent   = hadiahData.length;
+  document.getElementById('hadiahAktif').textContent   = aktif;
   document.getElementById('hadiahExpired').textContent = expired;
-  document.getElementById('totalMiles').textContent   = formatMiles(totalMiles);
+  document.getElementById('totalMiles').textContent    = formatMiles(totalMiles);
 
   if (source.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#aab4c8;padding:24px;">Tidak ada data ditemukan.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-gray-400 py-6 text-sm">Tidak ada data ditemukan.</td></tr>`;
     return;
   }
 
-  source.forEach((h, i) => {
+  source.forEach((h) => {
     const status = getStatus(h.akhir);
     const realIndex = hadiahData.indexOf(h);
+    const badgeClass = status === 'Aktif'
+      ? 'bg-green-100 text-green-800'
+      : 'bg-red-100 text-red-800';
+
     tbody.innerHTML += `
-      <tr>
-        <td class="td-kode">${h.kode}</td>
-        <td>
-          <div class="td-nama">${h.nama}</div>
-          <div class="td-desc">${h.deskripsi}</div>
+      <tr class="border-b border-gray-100 last:border-0 hover:bg-gray-50">
+        <td class="px-3.5 py-2.5 text-xs text-gray-400">${h.kode}</td>
+        <td class="px-3.5 py-2.5">
+          <div class="text-sm font-medium text-[#1a2540]">${h.nama}</div>
+          <div class="text-[11px] text-gray-400 mt-0.5">${h.deskripsi}</div>
         </td>
-        <td class="td-miles">${formatMiles(h.miles)}</td>
-        <td class="td-date">${h.mulai}</td>
-        <td class="td-date">${h.akhir}</td>
-        <td>
-          <span class="badge ${status === 'Aktif' ? 'badge-active' : 'badge-expired'}">${status}</span>
+        <td class="px-3.5 py-2.5 text-sm font-semibold text-[#1a2540]">${formatMiles(h.miles)}</td>
+        <td class="px-3.5 py-2.5 text-xs text-gray-500">${h.mulai}</td>
+        <td class="px-3.5 py-2.5 text-xs text-gray-500">${h.akhir}</td>
+        <td class="px-3.5 py-2.5">
+          <span class="text-[11px] font-medium px-2.5 py-1 rounded-full ${badgeClass}">${status}</span>
         </td>
-        <td>
-          <div class="aksi">
-            <button class="btn-edit" onclick="openEdit(${realIndex})" title="Edit">✎</button>
-            <button class="btn-delete" onclick="deleteHadiah(${realIndex})" title="Hapus">✕</button>
+        <td class="px-3.5 py-2.5">
+          <div class="flex gap-1.5 items-center">
+            <button onclick="openEdit(${realIndex})" title="Edit"
+              class="text-blue-500 hover:bg-blue-50 text-base px-1.5 py-0.5 rounded transition">✎</button>
+            <button onclick="deleteHadiah(${realIndex})" title="Hapus"
+              class="text-red-500 hover:bg-red-50 text-base px-1.5 py-0.5 rounded transition">✕</button>
           </div>
         </td>
       </tr>
@@ -106,7 +129,7 @@ function filterTable() {
 }
 
 // =====================
-// MODAL
+// MODAL OPEN
 // =====================
 function openCreate() {
   editIndex = null;
@@ -116,7 +139,7 @@ function openCreate() {
   document.getElementById('deskripsi').value = '';
   document.getElementById('mulai').value = '';
   document.getElementById('akhir').value = '';
-  document.getElementById('modalForm').classList.add('show');
+  showModal();
 }
 
 function openEdit(index) {
@@ -128,27 +151,18 @@ function openEdit(index) {
   document.getElementById('deskripsi').value = h.deskripsi;
   document.getElementById('mulai').value = h.mulai;
   document.getElementById('akhir').value = h.akhir;
-  document.getElementById('modalForm').classList.add('show');
+  showModal();
 }
-
-function closeModal() {
-  document.getElementById('modalForm').classList.remove('show');
-}
-
-// Close modal when clicking outside
-document.getElementById('modalForm').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
 
 // =====================
-// SAVE (Create / Update)
+// SAVE
 // =====================
 function saveHadiah() {
-  const nama = document.getElementById('nama').value.trim();
-  const miles = document.getElementById('miles').value.trim();
+  const nama      = document.getElementById('nama').value.trim();
+  const miles     = document.getElementById('miles').value.trim();
   const deskripsi = document.getElementById('deskripsi').value.trim();
-  const mulai = document.getElementById('mulai').value;
-  const akhir = document.getElementById('akhir').value;
+  const mulai     = document.getElementById('mulai').value;
+  const akhir     = document.getElementById('akhir').value;
 
   if (!nama || !miles || !deskripsi || !mulai || !akhir) {
     alert('Harap lengkapi semua field!');
