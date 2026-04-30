@@ -18,8 +18,4 @@ urlpatterns = [
     path('transfer/', views.transfer_list, name='transfer_list'),
     path('transfer/kirim/', views.transfer_create, name='transfer_create'),
 
-    # Pengaturan Profil
-    path('profile/', views.pengaturan_profile, name='pengaturan_profile'),
-    path('profile/update/', views.update_profile, name='update_profile'),
-    path('profile/password/', views.update_password, name='update_password'),
 ]

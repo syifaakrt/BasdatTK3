@@ -1,30 +1,32 @@
 from decimal import Decimal
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.contrib import messages
+from main.views import get_current_user, get_role
 
 
 def member_nav_items():
     return [
-        {"label": "Dashboard", "href": "#"},
-        {"label": "Identitas Saya", "href": "#"},
-        {"label": "Klaim Miles", "href": "#"},
-        {"label": "Transfer Miles", "href": "#"},
-        {"label": "Redeem Hadiah", "href": "/member/redeem-hadiah/"},
-        {"label": "Beli Package", "href": "/member/beli-package/"},
-        {"label": "Info Tier", "href": "/member/info-tier/"},
-        {"label": "Pengaturan Profil", "href": "#"},
+        {"label": "Dashboard", "href": "/dashboard"},
+        {"label": "Identitas Saya", "href": "/manage/identitas/"},
+        {"label": "Klaim Miles", "href": "/miles/klaim/"},
+        {"label": "Transfer Miles", "href": "/miles/transfer/"},
+        {"label": "Redeem Hadiah", "href": "/rewards/member/redeem-hadiah/"},
+        {"label": "Beli Package", "href": "/rewards/member/beli-package/"},
+        {"label": "Info Tier", "href": "/rewards/member/info-tier/"},
+        {"label": "Pengaturan Profil", "href": "/profile/"},
         {"label": "Logout", "href": "#"},
     ]
 
 
 def staff_nav_items():
     return [
-        {"label": "Dashboard", "href": "#"},
-        {"label": "Kelola Member", "href": "#"},
-        {"label": "Kelola Klaim", "href": "#"},
-        {"label": "Kelola Hadiah & Penyedia", "href": "#"},
-        {"label": "Kelola Mitra", "href": "#"},
-        {"label": "Laporan Transaksi", "href": "/staff/laporan-transaksi/"},
-        {"label": "Pengaturan Profil", "href": "#"},
+        {"label": "Dashboard", "href": "/dashboard/"},
+        {"label": "Kelola Member", "href": "/manage/kelola/"},
+        {"label": "Kelola Klaim", "href": "/miles/staf/klaim/"},
+        {"label": "Kelola Hadiah & Penyedia", "href": "/rewards/staf/kelola-hadiah"},
+        {"label": "Kelola Mitra", "href": "/rewards/staf/kelola-mitra"},
+        {"label": "Laporan Transaksi", "href": "/rewards/staf/laporan-transaksi/"},
+        {"label": "Pengaturan Profil", "href": "/profile/"},
         {"label": "Logout", "href": "#"},
     ]
 
@@ -276,3 +278,21 @@ def staff_laporan_transaksi(request):
         },
     })
     return render(request, "staff/laporan_transaksi.html", context)
+
+# =====================
+# KELOLA HADIAH
+# =====================
+def kelola_hadiah(request):
+    user = get_current_user(request)
+    if not user or get_role(user.email) != 'staff':
+        return redirect('login')
+    return render(request, 'staff/kelola_hadiah.html', {'user': user, 'nav_items':staff_nav_items(), 'role': 'staff'})
+
+# =====================
+# KELOLA MITRA
+# =====================
+def kelola_mitra(request):
+    user = get_current_user(request)
+    if not user or get_role(user.email) != 'staff':
+        return redirect('login')
+    return render(request, 'staff/kelola_mitra.html', {'user': user, 'nav_items':staff_nav_items(), 'role': 'staff'})

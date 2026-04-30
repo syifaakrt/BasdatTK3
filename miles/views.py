@@ -12,17 +12,19 @@ def get_session(request):
 # =====================
 
 def claim_list(request):
+    from datetime import datetime, date
+    from rewards.views import member_nav_items
     email, role = get_session(request)
+    nav_items=member_nav_items
 
     status_filter = request.GET.get('status', '')
 
     # HARDCODE sementara
     all_claims = [
-        (1, 'GA', 'CGK', 'DPS', '2024-10-01', 'GA404', 'Business', 'Disetujui', '2024-10-05 18:45:00', 'TKT-001', 'PNR001'),
-        (2, 'SQ', 'SIN', 'NRT', '2024-11-15', 'SQ12', 'Economy', 'Menunggu', '2024-11-20 18:45:00', 'TKT-002', 'PNR002'),
-        (3, 'GA', 'CGK', 'SUB', '2024-12-01', 'GA310', 'Economy', 'Ditolak', '2024-12-05 18:45:00', 'TKT-003', 'PNR003'),
+        (1, 'GA', 'CGK', 'DPS', date(2024, 10, 1), 'GA404', 'Business', 'Disetujui', datetime(2024, 10, 5, 18, 45), 'TKT-001', 'PNR001'),
+        (2, 'SQ', 'SIN', 'NRT', date(2024, 11, 15), 'SQ12', 'Economy', 'Menunggu', datetime(2024, 11, 20, 18, 45), 'TKT-002', 'PNR002'),
+        (3, 'GA', 'CGK', 'SUB', date(2024, 12, 1), 'GA310', 'Economy', 'Ditolak', datetime(2024, 12, 5, 18, 45), 'TKT-003', 'PNR003'),
     ]
-
     if status_filter:
         claims = [c for c in all_claims if c[7] == status_filter]
     else:
@@ -37,6 +39,8 @@ def claim_list(request):
         'bandara_list': bandara_list,
         'status_filter': status_filter,
         'email': email,
+        'nav_items':nav_items,
+        'role':'member'
     })
 
 
@@ -67,6 +71,7 @@ def claim_delete(request, id):
 
 def staf_claim_list(request):
     email, role = get_session(request)
+    from rewards.views import staff_nav_items, member_nav_items
 
     status_filter = request.GET.get('status', '')
     maskapai_filter = request.GET.get('maskapai', '')
@@ -89,6 +94,8 @@ def staf_claim_list(request):
 
     maskapai_list = [('GA', 'Garuda Indonesia'), ('SQ', 'Singapore Airlines'), ('MH', 'Malaysia Airlines'), ('QG', 'Citilink')]
 
+
+
     return render(request, 'miles/staf_claim_list.html', {
         'claims': claims,
         'maskapai_list': maskapai_list,
@@ -97,6 +104,8 @@ def staf_claim_list(request):
         'tanggal_dari': tanggal_dari,
         'tanggal_sampai': tanggal_sampai,
         'email': email,
+        'role': 'staf',
+        'nav_items': staff_nav_items
     })
 
 
@@ -113,20 +122,31 @@ def staf_claim_update(request, id):
 # =====================
 
 def transfer_list(request):
+    from datetime import datetime
     email, role = get_session(request)
+    from rewards.views import staff_nav_items, member_nav_items
 
-    # HARDCODE sementara
+
     transfers = [
-        ('2025-01-15 10:30', 'Peter Parker', 'peter.parker@gmail.com', 5000, 'Hadiah ulang tahun', 'Kirim'),
-        ('2025-02-01 14:00', 'Olivia Brown', 'olivia.brown@gmail.com', 2000, '-', 'Terima'),
-    ]
+        (datetime(2025, 1, 15, 10, 30), 'Peter Parker', 'peter.parker@gmail.com', 5000, 'Hadiah ulang tahun', 'Kirim'),
+        (datetime(2025, 2, 1, 14, 0), 'Olivia Brown', 'olivia.brown@gmail.com', 2000, '-', 'Terima'),
+    ]    
     award_miles = 32000
+
+    if role=="member":
+        nav_items = member_nav_items()
+    else:
+        nav_items = staff_nav_items()
+
 
     return render(request, 'miles/transfer_list.html', {
         'transfers': transfers,
         'award_miles': award_miles,
         'email': email,
+        'nav_items':nav_items,
+        'role':role
     })
+
 
 
 def transfer_create(request):
@@ -143,6 +163,7 @@ def transfer_create(request):
 
 def pengaturan_profile(request):
     email, role = get_session(request)
+    from rewards.views import staff_nav_items, member_nav_items
 
     if role == 'member':
         profil = (
@@ -150,12 +171,15 @@ def pengaturan_profile(request):
             '+65', '9123456001', '1997-04-25', 'Singaporean',
             'M0001', '2020-01-15'
         )
+        nav_items = member_nav_items
     else:
         profil = (
             'admin@aeromiles.com', 'Mr.', 'Admin', 'Aero',
             '+62', '81111111111', '1988-01-01', 'Indonesian',
             'S0001', 'GA'
         )
+        nav_items = staff_nav_items
+
 
     maskapai_list = [('GA', 'Garuda Indonesia'), ('SQ', 'Singapore Airlines'), ('MH', 'Malaysia Airlines')]
 
@@ -163,6 +187,7 @@ def pengaturan_profile(request):
         'profil': profil,
         'role': role,
         'maskapai_list': maskapai_list,
+        'nav_items':nav_items
     })
 
 

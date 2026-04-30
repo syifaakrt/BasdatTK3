@@ -2,7 +2,7 @@
 
 {% block content %}
 <style>
-    .page-title { font-size: 1.4rem; font-weight: 700; color: #0f2044; margin-bottom: 24px; }
+    .page-title { font-size: 1.4rem; font-weight: 700; color: #0f2044; margin-bottom: 24px; text-align: center; }
     .card { background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); padding: 28px; margin-bottom: 20px; }
     .card-title { font-size: 1rem; font-weight: 700; color: #0f2044; margin-bottom: 22px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
@@ -31,12 +31,12 @@
     .modal .form-group { margin-bottom: 16px; }
 </style>
 
-<div class="container" style="max-width: 700px;">
+<div class="container mx-auto" style="max-width: 700px;">
     <div class="page-title">Pengaturan Profil</div>
 
     <div class="card">
         <div class="card-title">Data Profil</div>
-        <form method="POST" action="{% url 'miles:update_profile' %}">
+        <form method="POST" action="{% url 'update_profile' %}">
             {% csrf_token %}
             
             <div class="form-group">
@@ -133,20 +133,20 @@
         </form>
     </div>
 
-    <div class="card">
+    <div class="card w-fit">
         <div class="card-title">Ubah Password</div>
         <button class="btn btn-secondary" onclick="openModal('modalPassword')">Ubah Password</button>
     </div>
 </div>
 
     <!-- Modal Ubah Password -->
-<div class="modal-overlay" id="modalPassword">
+<div class="modal-overlay " id="modalPassword">
     <div class="modal">
         <div class="modal-header">
             <h2>Ubah Password</h2>
             <button class="modal-close" onclick="closeModal('modalPassword')">✕</button>
         </div>
-        <form method="POST" action="{% url 'miles:update_password' %}">
+        <form method="POST" action="{% url 'update_password' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label>Password Lama</label>
