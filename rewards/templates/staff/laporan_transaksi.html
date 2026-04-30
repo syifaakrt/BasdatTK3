@@ -184,28 +184,55 @@
     </div>
 </div>
 
+<div class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center" id="modalHapus">
+    <div class="bg-white rounded-2xl shadow-xl p-7 w-full max-w-sm mx-4">
+        <h2 class="text-lg font-bold text-[#0b1f3a] mb-2">Hapus Transaksi?</h2>
+        <p class="text-sm text-gray-500 mb-1">Tipe: <span id="modal-tipe" class="font-semibold text-gray-700"></span></p>
+        <p class="text-sm text-gray-500 mb-5">Member: <span id="modal-member" class="font-semibold text-gray-700"></span></p>
+        <p class="text-xs text-amber-700 bg-amber-50 rounded-lg px-3 py-2 mb-6">
+            Tindakan ini permanen dan tidak dapat dibatalkan.
+        </p>
+        <div class="flex justify-end gap-3">
+            <button id="modal-cancel" class="px-4 py-2 text-sm font-bold rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
+                Batal
+            </button>
+            <button id="modal-confirm" class="px-4 py-2 text-sm font-bold rounded-lg bg-red-600 text-white hover:bg-red-700 transition">
+                Ya, Hapus
+            </button>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
-    (() => {
-        const typeSelect = document.getElementById("tipe");
-        const memberSelect = document.getElementById("member");
-        const applyButton = document.getElementById("apply-filter-button");
-        const rows = document.querySelectorAll("[data-transaction-row]");
-        const feedback = document.getElementById("transaction-feedback");
+    document.addEventListener("DOMContentLoaded", () => {
+        const typeSelect    = document.getElementById("tipe");
+        const memberSelect  = document.getElementById("member");
+        const applyButton   = document.getElementById("apply-filter-button");
+        const rows          = document.querySelectorAll("[data-transaction-row]");
+        const feedback      = document.getElementById("transaction-feedback");
+        const modal         = document.getElementById("modalHapus");
+        const modalTipe     = document.getElementById("modal-tipe");
+        const modalMember   = document.getElementById("modal-member");
+        const modalCancel   = document.getElementById("modal-cancel");
+        const modalConfirm  = document.getElementById("modal-confirm");
 
+        let pendingRow = null;
+
+        // --- Filter ---
         applyButton.addEventListener("click", () => {
-            const selectedType = typeSelect.value;
+            const selectedType   = typeSelect.value;
             const selectedMember = memberSelect.value;
             let visibleRows = 0;
 
             rows.forEach((row) => {
-                const rowType = row.querySelector('[data-column="type"]').textContent.trim();
+                const rowType   = row.querySelector('[data-column="type"]').textContent.trim();
                 const rowMember = row.querySelector('[data-column="member"]').textContent.trim();
-                const typeMatch = selectedType === "Semua" || rowType === selectedType;
+                const typeMatch   = selectedType === "Semua" || rowType === selectedType;
                 const memberMatch = selectedMember === "Semua Member" || rowMember === selectedMember;
-                const shouldShow = typeMatch && memberMatch;
+                const shouldShow  = typeMatch && memberMatch;
                 row.style.display = shouldShow ? "" : "none";
                 if (shouldShow) visibleRows++;
             });
@@ -213,15 +240,36 @@
             feedback.innerHTML = `<strong>Filter diterapkan:</strong> ${visibleRows} transaksi ditampilkan untuk kombinasi filter saat ini.`;
         });
 
+        // --- Buka modal hapus ---
         document.querySelectorAll("[data-delete-trigger]").forEach((button) => {
             button.addEventListener("click", () => {
-                const row = button.closest("[data-transaction-row]");
-                const transactionType = row.querySelector('[data-column="type"]').textContent.trim();
-                const member = row.querySelector('[data-column="member"]').textContent.trim();
-                row.remove();
-                feedback.innerHTML = `<strong>Riwayat diperbarui:</strong> transaksi ${transactionType} milik ${member} telah dihapus dari tampilan laporan.`;
+                pendingRow = button.closest("[data-transaction-row]");
+                modalTipe.textContent   = pendingRow.querySelector('[data-column="type"]').textContent.trim();
+                modalMember.textContent = pendingRow.querySelector('[data-column="member"]').textContent.trim();
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
             });
         });
-    })();
+
+        // --- Tutup modal ---
+        function closeModal() {
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+            pendingRow = null;
+        }
+
+        modalCancel.addEventListener("click", closeModal);
+        modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+        // --- Konfirmasi hapus ---
+        modalConfirm.addEventListener("click", () => {
+            if (!pendingRow) return;
+            const tipe   = modalTipe.textContent;
+            const member = modalMember.textContent;
+            pendingRow.remove();
+            feedback.innerHTML = `<strong>Riwayat diperbarui:</strong> transaksi ${tipe} milik ${member} telah dihapus dari tampilan laporan.`;
+            closeModal();
+        });
+    });
 </script>
 {% endblock %}
