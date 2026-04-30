@@ -94,7 +94,7 @@ def staf_claim_list(request):
 
     maskapai_list = [('GA', 'Garuda Indonesia'), ('SQ', 'Singapore Airlines'), ('MH', 'Malaysia Airlines'), ('QG', 'Citilink')]
 
-
+    nav_items = staff_nav_items()
 
     return render(request, 'miles/staf_claim_list.html', {
         'claims': claims,
@@ -104,7 +104,7 @@ def staf_claim_list(request):
         'tanggal_dari': tanggal_dari,
         'tanggal_sampai': tanggal_sampai,
         'email': email,
-        'role': 'staf',
+        'role': 'staff',
         'nav_items': staff_nav_items
     })
 
