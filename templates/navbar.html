@@ -37,7 +37,7 @@
                 <!-- MEMBER: sudah login, tampilkan menu member -->
                 {% for item in nav_items %}
                     <a href="{{ item.href }}"
-                       class="px-4 py-2 rounded-full text-sm transition
+                       class="px-2 py-2 rounded-full text-sm transition
                               {% if item.label == current_page %}
                                   bg-white/20 text-white font-semibold
                               {% else %}
@@ -51,7 +51,7 @@
                 <!-- STAFF: sudah login, tampilkan menu staff -->
                 {% for item in nav_items %}
                     <a href="{{ item.href }}"
-                       class="px-4 py-2 rounded-full text-sm transition
+                       class="px-2 py-2 rounded-full text-sm transition
                               {% if item.label == current_page %}
                                   bg-white/20 text-white font-semibold
                               {% else %}
