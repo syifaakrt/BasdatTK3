@@ -15,32 +15,60 @@ def get_session(request):
 
 def pengaturan_profile(request):
     from rewards.views import staff_nav_items, member_nav_items
-    email, role = get_session(request)
+
+    user = get_current_user(request)
+    if not user:
+        return redirect('login')
+
+    role = get_role(user.email)
 
     if role == 'member':
+        member = Member.objects.get(email_id=user.email)
         profil = (
-            'ryland.grace@email.com', 'Mr.', 'Ryland', 'Grace',
-            '+65', '9123456001', '1997-04-25', 'Singaporean',
-            'M0001', '2020-01-15'
+            user.email,                   
+            user.salutation,              
+            user.first_mid_name,          
+            user.last_name,               
+            user.country_code,            
+            user.mobile_number,           
+            user.tanggal_lahir,           
+            user.kewarganegaraan,         
+            member.nomor_member,          
+            member.tanggal_bergabung,     
         )
-        nav_items=member_nav_items
-    else:
-        profil = (
-            'admin@aeromiles.com', 'Mr.', 'Admin', 'Aero',
-            '+62', '81111111111', '1988-01-01', 'Indonesian',
-            'S0001', 'GA'
-        )
-        nav_items=staff_nav_items
+        nav_items = member_nav_items()
+        maskapai_list = []
 
-    maskapai_list = [('GA', 'Garuda Indonesia'), ('SQ', 'Singapore Airlines'), ('MH', 'Malaysia Airlines')]
+    elif role == 'staff':
+        staf = Staf.objects.select_related('kode_maskapai').get(email_id=user.email)
+        profil = (
+            user.email,                              
+            user.salutation,                         
+            user.first_mid_name,                     
+            user.last_name,                         
+            user.country_code,                  
+            user.mobile_number,                  
+            user.tanggal_lahir,              
+            user.kewarganegaraan,                  
+            staf.id_staf,                           
+            staf.kode_maskapai.kode_maskapai,       
+        )
+        nav_items = staff_nav_items()
+        maskapai_list = list(
+            Staf.objects.select_related('kode_maskapai')
+            .values_list('kode_maskapai__kode_maskapai', 'kode_maskapai__nama_maskapai')
+            .distinct()
+        )
+
+    else:
+        return redirect('login')
 
     return render(request, 'pengaturan_profile.html', {
         'profil': profil,
         'role': role,
         'maskapai_list': maskapai_list,
-        'nav_items': nav_items
+        'nav_items': nav_items,
     })
-
 
 def update_profile(request):
     email, role = get_session(request)
