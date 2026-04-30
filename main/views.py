@@ -30,14 +30,24 @@ def staff_nav_items():
 
 
 def base_context(role, current_page, page_title):
+    """
+    role: "guest" | "member" | "staff"
+    - "guest"  → navbar tampil tombol Masuk & Daftar (belum login)
+    - "member" → navbar tampil menu member (sudah login)
+    - "staff"  → navbar tampil menu staff (sudah login)
+    """
     if role == "staff":
         nav_items = staff_nav_items()
         user_name = "Yasmin Omar"
         user_code = "S0001"
-    else:
+    elif role == "member":
         nav_items = member_nav_items()
         user_name = "Citra Dewi"
         user_code = "M0003"
+    else:
+        nav_items = []
+        user_name = ""
+        user_code = ""
 
     return {
         "role": role,
@@ -48,6 +58,20 @@ def base_context(role, current_page, page_title):
         "user_code": user_code,
     }
 
+# ---------------------------------------------------------------------------
+# GUEST VIEWS
+# ---------------------------------------------------------------------------
+def guest_home(request):
+    context = base_context(
+        role="guest",
+        current_page="Redeem Hadiah",
+        page_title="Guest View",
+    )
+    return render(request, "member/redeem_hadiah.html", context)
+
+# ---------------------------------------------------------------------------
+# MEMBER VIEWS
+# ---------------------------------------------------------------------------
 
 def member_redeem_hadiah(request):
     hadiah_list = [
@@ -128,21 +152,19 @@ def member_redeem_hadiah(request):
         current_page="Redeem Hadiah",
         page_title="Redeem Hadiah",
     )
-    context.update(
-        {
-            "member_award_miles": member_award_miles,
-            "hadiah_list": hadiah_list,
-            "redeem_history": redeem_history,
-            "selected_hadiah": selected_hadiah,
-            "remaining_miles_after_redeem": member_award_miles - selected_hadiah["miles"],
-        }
-    )
+    context.update({
+        "member_award_miles": member_award_miles,
+        "hadiah_list": hadiah_list,
+        "redeem_history": redeem_history,
+        "selected_hadiah": selected_hadiah,
+        "remaining_miles_after_redeem": member_award_miles - selected_hadiah["miles"],
+    })
     return render(request, "member/redeem_hadiah.html", context)
 
 
 def member_beli_package(request):
     packages = [
-        {"id": "AMP-001", "jumlah_award_miles": 5000, "harga_paket": Decimal("150000.00")},
+        {"id": "AMP-001", "jumlah_award_miles": 5000,  "harga_paket": Decimal("150000.00")},
         {"id": "AMP-002", "jumlah_award_miles": 10000, "harga_paket": Decimal("280000.00")},
         {"id": "AMP-003", "jumlah_award_miles": 20000, "harga_paket": Decimal("500000.00")},
         {"id": "AMP-004", "jumlah_award_miles": 40000, "harga_paket": Decimal("900000.00")},
@@ -166,23 +188,21 @@ def member_beli_package(request):
         current_page="Beli Package",
         page_title="Beli Award Miles Package",
     )
-    context.update(
-        {
-            "member_award_miles": member_award_miles,
-            "packages": packages,
-            "purchase_history": purchase_history,
-            "selected_package": selected_package,
-            "total_after_purchase": member_award_miles + selected_package["jumlah_award_miles"],
-        }
-    )
+    context.update({
+        "member_award_miles": member_award_miles,
+        "packages": packages,
+        "purchase_history": purchase_history,
+        "selected_package": selected_package,
+        "total_after_purchase": member_award_miles + selected_package["jumlah_award_miles"],
+    })
     return render(request, "member/beli_package.html", context)
 
 
 def member_info_tier(request):
     tier_list = [
-        {"id_tier": "T001", "nama": "Blue", "minimal_frekuensi_terbang": 0, "minimal_tier_miles": 0},
-        {"id_tier": "T002", "nama": "Silver", "minimal_frekuensi_terbang": 10, "minimal_tier_miles": 25000},
-        {"id_tier": "T003", "nama": "Gold", "minimal_frekuensi_terbang": 25, "minimal_tier_miles": 50000},
+        {"id_tier": "T001", "nama": "Blue",     "minimal_frekuensi_terbang": 0,  "minimal_tier_miles": 0},
+        {"id_tier": "T002", "nama": "Silver",   "minimal_frekuensi_terbang": 10, "minimal_tier_miles": 25000},
+        {"id_tier": "T003", "nama": "Gold",     "minimal_frekuensi_terbang": 25, "minimal_tier_miles": 50000},
         {"id_tier": "T004", "nama": "Platinum", "minimal_frekuensi_terbang": 50, "minimal_tier_miles": 100000},
     ]
 
@@ -201,71 +221,37 @@ def member_info_tier(request):
         current_page="Info Tier",
         page_title="Informasi Tier & Keuntungan",
     )
-    context.update(
-        {
-            "tier_list": tier_list,
-            "current_member": current_member,
-        }
-    )
+    context.update({
+        "tier_list": tier_list,
+        "current_member": current_member,
+    })
     return render(request, "member/info_tier.html", context)
 
 
+# ---------------------------------------------------------------------------
+# STAFF VIEWS
+# ---------------------------------------------------------------------------
+
 def staff_laporan_transaksi(request):
     transactions = [
-        {
-            "tipe": "Transfer",
-            "member": "alice.smith@email.com",
-            "jumlah_miles": 2000,
-            "timestamp": "2024-01-10 10:30:00",
-            "dapat_dihapus": True,
-        },
-        {
-            "tipe": "Redeem",
-            "member": "citra.dewi@email.com",
-            "jumlah_miles": 3000,
-            "timestamp": "2024-02-05 09:15:00",
-            "dapat_dihapus": True,
-        },
-        {
-            "tipe": "Pembelian Package",
-            "member": "citra.dewi@email.com",
-            "jumlah_miles": 20000,
-            "timestamp": "2024-02-01 10:15:00",
-            "dapat_dihapus": True,
-        },
-        {
-            "tipe": "Klaim Disetujui",
-            "member": "alice.smith@email.com",
-            "jumlah_miles": 4500,
-            "timestamp": "2024-01-10 09:00:00",
-            "dapat_dihapus": False,
-        },
-        {
-            "tipe": "Transfer",
-            "member": "bob.jones@email.com",
-            "jumlah_miles": 1500,
-            "timestamp": "2024-03-18 13:30:00",
-            "dapat_dihapus": True,
-        },
-        {
-            "tipe": "Redeem",
-            "member": "queen.park@email.com",
-            "jumlah_miles": 5000,
-            "timestamp": "2024-06-03 10:00:00",
-            "dapat_dihapus": True,
-        },
+        {"tipe": "Transfer",           "member": "alice.smith@email.com",  "jumlah_miles": 2000,  "timestamp": "2024-01-10 10:30:00", "dapat_dihapus": True},
+        {"tipe": "Redeem",             "member": "citra.dewi@email.com",   "jumlah_miles": 3000,  "timestamp": "2024-02-05 09:15:00", "dapat_dihapus": True},
+        {"tipe": "Pembelian Package",  "member": "citra.dewi@email.com",   "jumlah_miles": 20000, "timestamp": "2024-02-01 10:15:00", "dapat_dihapus": True},
+        {"tipe": "Klaim Disetujui",    "member": "alice.smith@email.com",  "jumlah_miles": 4500,  "timestamp": "2024-01-10 09:00:00", "dapat_dihapus": False},
+        {"tipe": "Transfer",           "member": "bob.jones@email.com",    "jumlah_miles": 1500,  "timestamp": "2024-03-18 13:30:00", "dapat_dihapus": True},
+        {"tipe": "Redeem",             "member": "queen.park@email.com",   "jumlah_miles": 5000,  "timestamp": "2024-06-03 10:00:00", "dapat_dihapus": True},
     ]
 
     top_total_miles = [
         {"member": "peter.parker@email.com", "total_miles": 130000},
-        {"member": "frank.ocean@email.com", "total_miles": 120000},
-        {"member": "bob.jones@email.com", "total_miles": 115000},
+        {"member": "frank.ocean@email.com",  "total_miles": 120000},
+        {"member": "bob.jones@email.com",    "total_miles": 115000},
     ]
 
     top_activity = [
-        {"member": "citra.dewi@email.com", "aktivitas": "Redeem", "jumlah": 1},
+        {"member": "citra.dewi@email.com",  "aktivitas": "Redeem",   "jumlah": 1},
         {"member": "alice.smith@email.com", "aktivitas": "Transfer", "jumlah": 1},
-        {"member": "bob.jones@email.com", "aktivitas": "Transfer", "jumlah": 1},
+        {"member": "bob.jones@email.com",   "aktivitas": "Transfer", "jumlah": 1},
     ]
 
     context = base_context(
@@ -273,22 +259,20 @@ def staff_laporan_transaksi(request):
         current_page="Laporan Transaksi",
         page_title="Laporan & Riwayat Transaksi Miles",
     )
-    context.update(
-        {
-            "transactions": transactions,
-            "top_total_miles": top_total_miles,
-            "top_activity": top_activity,
-            "stats": {
-                "total_miles_beredar": 875000,
-                "total_redeem_bulan_ini": 16,
-                "total_klaim_disetujui": 12,
-            },
-            "filters": {
-                "selected_type": "Semua",
-                "selected_member": "Semua Member",
-                "date_start": "2024-01-01",
-                "date_end": "2024-08-31",
-            },
-        }
-    )
+    context.update({
+        "transactions": transactions,
+        "top_total_miles": top_total_miles,
+        "top_activity": top_activity,
+        "stats": {
+            "total_miles_beredar": 875000,
+            "total_redeem_bulan_ini": 16,
+            "total_klaim_disetujui": 12,
+        },
+        "filters": {
+            "selected_type": "Semua",
+            "selected_member": "Semua Member",
+            "date_start": "2024-01-01",
+            "date_end": "2024-08-31",
+        },
+    })
     return render(request, "staff/laporan_transaksi.html", context)

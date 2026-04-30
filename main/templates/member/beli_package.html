@@ -3,50 +3,63 @@
 {% block title %}Beli Package | AeroMiles{% endblock %}
 
 {% block content %}
-<section class="page-header">
+
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
     <div>
-        <p class="eyebrow">Member Feature</p>
-        <h1>Pembelian Award Miles Package</h1>
-        <p class="page-description">
+        <p class="text-xs font-bold uppercase tracking-widest text-[#1c4f87] mb-2">Member Feature</p>
+        <h1 class="text-3xl font-bold text-[#0b1f3a] mb-2">Pembelian Award Miles Package</h1>
+        <p class="text-gray-500 max-w-xl leading-relaxed">
             Lihat daftar package, pilih package yang sesuai, dan pantau riwayat pembelian award miles.
         </p>
     </div>
-    <div class="highlight-box">
-        <span class="highlight-label">Award Miles Saat Ini</span>
-        <strong class="highlight-value">{{ member_award_miles }}</strong>
+    <div class="bg-white border border-gray-100 rounded-2xl shadow px-6 py-4 min-w-[200px]">
+        <span class="block text-xs text-gray-500 mb-1">Award Miles Saat Ini</span>
+        <strong class="text-3xl font-bold text-[#0b1f3a]">{{ member_award_miles }}</strong>
     </div>
-</section>
+</div>
 
-<section class="content-grid two-columns">
-    <div class="section-card">
-        <div class="section-heading">
-            <h2>Katalog Package</h2>
-            <span class="badge navy">Package Tersedia</span>
+<!-- Main Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6">
+
+    <!-- Katalog Package -->
+    <div class="bg-white border border-gray-100 rounded-2xl shadow p-6">
+        <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg font-bold text-[#0b1f3a]">Katalog Package</h2>
+            <span class="px-3 py-1.5 rounded-full bg-[#edf4fb] text-[#0b1f3a] text-xs font-bold">Package Tersedia</span>
         </div>
 
-        <div class="table-wrapper">
-            <table>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm min-w-[480px]">
                 <thead>
-                    <tr>
-                        <th>ID Paket</th>
-                        <th>Jumlah Award Miles</th>
-                        <th>Harga Paket</th>
-                        <th>Aksi</th>
+                    <tr class="bg-[#0b1f3a] text-white">
+                        <th class="px-4 py-3 text-left text-xs font-bold">ID Paket</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold">Jumlah Award Miles</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold">Harga Paket</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for package in packages %}
                     <tr
+                        class="border-b border-gray-100 hover:bg-gray-50 transition cursor-pointer"
                         data-package-row
                         data-id="{{ package.id }}"
                         data-miles="{{ package.jumlah_award_miles }}"
                         data-harga="{{ package.harga_paket }}"
                         data-total="{{ member_award_miles|add:package.jumlah_award_miles }}"
                     >
-                        <td>{{ package.id }}</td>
-                        <td>{{ package.jumlah_award_miles }}</td>
-                        <td>Rp{{ package.harga_paket }}</td>
-                        <td><button class="primary-button small" type="button" data-buy-trigger>Beli</button></td>
+                        <td class="px-4 py-3 font-mono text-xs text-gray-600">{{ package.id }}</td>
+                        <td class="px-4 py-3 font-bold text-[#0b1f3a]">{{ package.jumlah_award_miles }}</td>
+                        <td class="px-4 py-3 text-gray-700">Rp{{ package.harga_paket }}</td>
+                        <td class="px-4 py-3">
+                            <button
+                                class="px-3 py-1.5 bg-[#0b1f3a] text-white text-xs font-bold rounded-lg hover:bg-[#12345a] transition"
+                                type="button"
+                                data-buy-trigger>
+                                Beli
+                            </button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -54,68 +67,78 @@
         </div>
     </div>
 
-    <div class="stack-section">
-        <div class="section-card">
-            <div class="section-heading">
-                <h2>Konfirmasi Pembelian</h2>
-                <span class="badge soft">Ringkasan</span>
+    <!-- Right Stack -->
+    <div class="flex flex-col gap-5">
+
+        <!-- Konfirmasi Pembelian -->
+        <div class="bg-white border border-gray-100 rounded-2xl shadow p-6">
+            <div class="flex items-center justify-between mb-5">
+                <h2 class="text-lg font-bold text-[#0b1f3a]">Konfirmasi Pembelian</h2>
+                <span class="px-3 py-1.5 rounded-full bg-gray-100 text-gray-500 text-xs font-bold">Ringkasan</span>
             </div>
 
-            <div class="confirmation-box">
-                <p class="confirmation-title" id="selected-package-id">{{ selected_package.id }}</p>
-                <div class="confirmation-row">
-                    <span>Jumlah Award Miles</span>
-                    <strong id="selected-package-miles">{{ selected_package.jumlah_award_miles }}</strong>
+            <div class="border border-gray-100 rounded-xl bg-blue-50/30 p-5">
+                <p class="text-base font-bold text-[#0b1f3a] mb-4" id="selected-package-id">{{ selected_package.id }}</p>
+
+                <div class="text-sm">
+                    <div class="flex justify-between py-2.5 border-b border-gray-100">
+                        <span class="text-gray-500">Jumlah Award Miles</span>
+                        <strong id="selected-package-miles" class="text-[#0b1f3a]">{{ selected_package.jumlah_award_miles }}</strong>
+                    </div>
+                    <div class="flex justify-between py-2.5 border-b border-gray-100">
+                        <span class="text-gray-500">Harga Paket</span>
+                        <strong id="selected-package-price" class="text-[#0b1f3a]">Rp{{ selected_package.harga_paket }}</strong>
+                    </div>
+                    <div class="flex justify-between py-2.5">
+                        <span class="text-gray-500">Total Setelah Pembelian</span>
+                        <strong id="selected-package-total" class="text-[#0b1f3a]">{{ total_after_purchase }} miles</strong>
+                    </div>
                 </div>
-                <div class="confirmation-row">
-                    <span>Harga Paket</span>
-                    <strong id="selected-package-price">Rp{{ selected_package.harga_paket }}</strong>
-                </div>
-                <div class="confirmation-row">
-                    <span>Total Setelah Pembelian</span>
-                    <strong id="selected-package-total">{{ total_after_purchase }} miles</strong>
-                </div>
-                <p class="helper-text" id="package-helper-text">
+
+                <p class="text-xs text-gray-400 mt-4 mb-4" id="package-helper-text">
                     Periksa kembali jumlah miles dan harga paket sebelum menyelesaikan pembelian.
                 </p>
-                <div class="button-row">
-                    <button class="secondary-button" type="button" id="package-cancel-button">Batal</button>
-                    <button class="primary-button" type="button" id="package-confirm-button">Konfirmasi Beli</button>
+
+                <div class="flex justify-end gap-3">
+                    <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-bold hover:bg-gray-200 transition" type="button" id="package-cancel-button">Batal</button>
+                    <button class="px-4 py-2 rounded-lg bg-[#0b1f3a] text-white text-sm font-bold hover:bg-[#12345a] transition" type="button" id="package-confirm-button">Konfirmasi Beli</button>
                 </div>
             </div>
         </div>
 
-        <div class="section-card">
-            <div class="section-heading">
-                <h2>Riwayat Pembelian</h2>
-                <span class="badge light">{{ purchase_history|length }} transaksi</span>
+        <!-- Riwayat Pembelian -->
+        <div class="bg-white border border-gray-100 rounded-2xl shadow p-6">
+            <div class="flex items-center justify-between mb-5">
+                <h2 class="text-lg font-bold text-[#0b1f3a]">Riwayat Pembelian</h2>
+                <span class="px-3 py-1.5 rounded-full bg-gray-50 text-[#1c4f87] text-xs font-bold">{{ purchase_history|length }} transaksi</span>
             </div>
 
-            <div class="table-wrapper">
-                <table>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm min-w-[420px]">
                     <thead>
-                        <tr>
-                            <th>ID Paket</th>
-                            <th>Timestamp</th>
-                            <th>Award Miles</th>
-                            <th>Harga</th>
+                        <tr class="bg-[#0b1f3a] text-white">
+                            <th class="px-4 py-3 text-left text-xs font-bold">ID Paket</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold">Timestamp</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold">Award Miles</th>
+                            <th class="px-4 py-3 text-left text-xs font-bold">Harga</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in purchase_history %}
-                        <tr>
-                            <td>{{ item.id }}</td>
-                            <td>{{ item.timestamp }}</td>
-                            <td>{{ item.jumlah_award_miles }}</td>
-                            <td>Rp{{ item.harga_paket }}</td>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                            <td class="px-4 py-3 font-mono text-xs text-gray-600">{{ item.id }}</td>
+                            <td class="px-4 py-3 text-gray-500 text-xs">{{ item.timestamp }}</td>
+                            <td class="px-4 py-3 font-bold text-[#0b1f3a]">{{ item.jumlah_award_miles }}</td>
+                            <td class="px-4 py-3 text-gray-700">Rp{{ item.harga_paket }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
+
     </div>
-</section>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -131,8 +154,8 @@
         const confirmButton = document.getElementById("package-confirm-button");
 
         const setActiveRow = (row) => {
-            rows.forEach((item) => item.classList.remove("is-selected-row"));
-            row.classList.add("is-selected-row");
+            rows.forEach((r) => r.classList.remove("bg-blue-50/40", "outline", "outline-1", "outline-[#1c4f87]"));
+            row.classList.add("bg-blue-50/40", "outline", "outline-1", "outline-[#1c4f87]");
             idEl.textContent = row.dataset.id;
             milesEl.textContent = row.dataset.miles;
             priceEl.textContent = `Rp${row.dataset.harga}`;
@@ -142,14 +165,10 @@
         };
 
         rows.forEach((row) => {
-            row.querySelector("[data-buy-trigger]").addEventListener("click", () => {
-                setActiveRow(row);
-            });
+            row.querySelector("[data-buy-trigger]").addEventListener("click", () => setActiveRow(row));
         });
 
-        if (rows.length > 0) {
-            setActiveRow(rows[0]);
-        }
+        if (rows.length > 0) setActiveRow(rows[0]);
 
         cancelButton.addEventListener("click", () => {
             helperEl.textContent = "Pilih package dari tabel untuk melihat ringkasan pembelian.";
