@@ -11,3 +11,5 @@ urlpatterns = [
     path("member/info-tier/", views.member_info_tier, name="member_info_tier"),
     path("staff/laporan-transaksi/", views.staff_laporan_transaksi, name="staff_laporan_transaksi"),
 ]
+
+
